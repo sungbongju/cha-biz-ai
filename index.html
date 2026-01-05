@@ -1159,14 +1159,19 @@
             // 탭 콘텐츠 활성화
             document.getElementById(tabId).classList.add('active');
             
-            // 탭 버튼 활성화 (event가 있으면 event.target, 없으면 data-tab으로 찾기)
-            if (event && event.target) {
+            // 탭 버튼 활성화
+            if (event && event.target && event.target.classList) {
+                // 클릭으로 호출된 경우
                 event.target.classList.add('active');
             } else {
-                // NAVIGATE_TAB으로 호출된 경우: data-tab 속성으로 버튼 찾기
-                const tabButton = document.querySelector(`.tab[onclick*="${tabId}"]`);
-                if (tabButton) {
-                    tabButton.classList.add('active');
+                // NAVIGATE_TAB으로 호출된 경우: 모든 탭 버튼 순회해서 찾기
+                const allTabs = document.getElementsByClassName('tab');
+                for (let tab of allTabs) {
+                    const onclickAttr = tab.getAttribute('onclick');
+                    if (onclickAttr && onclickAttr.includes(tabId)) {
+                        tab.classList.add('active');
+                        break;
+                    }
                 }
             }
             
