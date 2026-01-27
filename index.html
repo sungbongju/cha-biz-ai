@@ -222,6 +222,42 @@
             bottom: 20px;
             right: 20px;
             z-index: 9999;
+            cursor: move;
+            user-select: none;
+        }
+
+        #heygen-pip-drag-handle {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 12px 12px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #heygen-pip-drag-handle span {
+            pointer-events: none;
+        }
+
+        #heygen-pip-minimize {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #heygen-pip-minimize:hover {
+            background: rgba(255,255,255,0.3);
         }
 
         #heygen-pip {
@@ -230,11 +266,26 @@
             border: none;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            background: transparent;
+            background: #1a1a1a;
             transition: all 0.3s ease;
+            display: block;
         }
 
-        #heygen-pip.minimized {
+        #heygen-pip-container.dragging #heygen-pip {
+            pointer-events: none;
+        }
+
+        #heygen-pip-container.dragging::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        #heygen-pip-container.minimized #heygen-pip {
             display: none;
         }
 
@@ -261,20 +312,8 @@
             transform: scale(1.1);
         }
 
-        #heygen-pip.minimized + #heygen-pip-toggle {
+        #heygen-pip-container.minimized + #heygen-pip-toggle {
             display: flex;
-        }
-
-        #heygen-pip-label {
-            position: absolute;
-            top: -35px;
-            left: 0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
         }
 
         @media (max-width: 768px) {
@@ -1094,18 +1133,18 @@
         <p style="margin-top: 15px; opacity: 0.8;">© 2025 차의과학대학교 경영학전공. All rights reserved.</p>
     </footer>
 
-    <!-- HeyGen Avatar PIP Widget (우측 하단) -->
+    <!-- HeyGen Avatar PIP Widget (드래그 가능) -->
     <div id="heygen-pip-container">
-        <span id="heygen-pip-label">🤖 AI 상담</span>
         <iframe 
             id="heygen-pip" 
-            src="https://interactiveavatarnextjsdemo.netlify.app/"
+            src="https://dapper-moonbeam-54a024.netlify.app"
             allow="camera; microphone; autoplay; clipboard-write"
         ></iframe>
     </div>
-    <button id="heygen-pip-toggle" onclick="toggleHeyGenPIP()">🤖</button>
+    <button id="heygen-pip-toggle" onclick="toggleHeyGenPIP(event)">🤖</button>
 
     <script>
+        // ✨ 수정된 openTab 함수 - postMessage 전송 추가
         function openTab(tabId) {
             const contents = document.getElementsByClassName('tab-content');
             for (let content of contents) {
@@ -1117,24 +1156,154 @@
                 tab.classList.remove('active');
             }
             
+            // 탭 콘텐츠 활성화
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            
+            // 탭 버튼 활성화
+            if (event && event.target && event.target.classList) {
+                // 클릭으로 호출된 경우
+                event.target.classList.add('active');
+            } else {
+                // NAVIGATE_TAB으로 호출된 경우: 모든 탭 버튼 순회해서 찾기
+                const allTabs = document.getElementsByClassName('tab');
+                for (let tab of allTabs) {
+                    const onclickAttr = tab.getAttribute('onclick');
+                    if (onclickAttr && onclickAttr.includes(tabId)) {
+                        tab.classList.add('active');
+                        break;
+                    }
+                }
+            }
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function toggleHeyGenPIP() {
-            const pip = document.getElementById('heygen-pip');
-            const label = document.getElementById('heygen-pip-label');
             
-            pip.classList.toggle('minimized');
-            
-            if (pip.classList.contains('minimized')) {
-                label.style.display = 'none';
-            } else {
-                label.style.display = 'block';
+            // ✨ HeyGen PIP에 탭 변경 알림 (postMessage)
+            const pipIframe = document.getElementById('heygen-pip');
+            if (pipIframe && pipIframe.contentWindow) {
+                pipIframe.contentWindow.postMessage({
+                    type: 'TAB_CHANGED',
+                    tabId: tabId
+                }, 'https://dapper-moonbeam-54a024.netlify.app');
+                console.log('📤 TAB_CHANGED sent:', tabId);
             }
         }
+
+        function toggleHeyGenPIP(e) {
+            if (e) e.stopPropagation();
+            const container = document.getElementById('heygen-pip-container');
+            container.classList.toggle('minimized');
+        }
+
+        // 드래그 기능
+        const pipContainer = document.getElementById('heygen-pip-container');
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        pipContainer.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'IFRAME') return;
+            isDragging = true;
+            pipContainer.classList.add('dragging');
+            offsetX = e.clientX - pipContainer.getBoundingClientRect().left;
+            offsetY = e.clientY - pipContainer.getBoundingClientRect().top;
+            pipContainer.style.transition = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            let newX = e.clientX - offsetX;
+            let newY = e.clientY - offsetY;
+            
+            // 화면 경계 제한
+            const maxX = window.innerWidth - pipContainer.offsetWidth;
+            const maxY = window.innerHeight - pipContainer.offsetHeight;
+            
+            newX = Math.max(0, Math.min(newX, maxX));
+            newY = Math.max(0, Math.min(newY, maxY));
+            
+            pipContainer.style.left = newX + 'px';
+            pipContainer.style.top = newY + 'px';
+            pipContainer.style.right = 'auto';
+            pipContainer.style.bottom = 'auto';
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                pipContainer.classList.remove('dragging');
+                pipContainer.style.transition = 'all 0.3s ease';
+            }
+        });
+
+        // 터치 지원 (모바일)
+        pipContainer.addEventListener('touchstart', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'IFRAME') return;
+            isDragging = true;
+            pipContainer.classList.add('dragging');
+            const touch = e.touches[0];
+            offsetX = touch.clientX - pipContainer.getBoundingClientRect().left;
+            offsetY = touch.clientY - pipContainer.getBoundingClientRect().top;
+            pipContainer.style.transition = 'none';
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const touch = e.touches[0];
+            
+            let newX = touch.clientX - offsetX;
+            let newY = touch.clientY - offsetY;
+            
+            const maxX = window.innerWidth - pipContainer.offsetWidth;
+            const maxY = window.innerHeight - pipContainer.offsetHeight;
+            
+            newX = Math.max(0, Math.min(newX, maxX));
+            newY = Math.max(0, Math.min(newY, maxY));
+            
+            pipContainer.style.left = newX + 'px';
+            pipContainer.style.top = newY + 'px';
+            pipContainer.style.right = 'auto';
+            pipContainer.style.bottom = 'auto';
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                pipContainer.classList.remove('dragging');
+                pipContainer.style.transition = 'all 0.3s ease';
+            }
+        });
+
+        // ============================================
+        // 🎯 PIP에서 탭 이동 명령 수신
+        // ============================================
+        window.addEventListener('message', (event) => {
+            console.log('📨 Message received:', event.origin, event.data);
+            
+            // origin 검증
+            const allowedOrigins = [
+                'https://dapper-moonbeam-54a024.netlify.app',
+                'http://localhost',
+                'http://127.0.0.1'
+            ];
+            
+            const isAllowed = allowedOrigins.some(origin => 
+                event.origin.startsWith(origin)
+            );
+            
+            if (!isAllowed) {
+                console.log('❌ Origin not allowed:', event.origin);
+                return;
+            }
+
+            const { type, tabId } = event.data || {};
+            console.log('📥 Parsed message:', { type, tabId });
+            
+            if (type === 'NAVIGATE_TAB' && tabId) {
+                console.log('✅ NAVIGATE_TAB executing:', tabId);
+                openTab(tabId);
+            }
+        });
     </script>
 </body>
 </html>
