@@ -1,1261 +1,1682 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>경영학전공 — 차의과학대학교</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-  <style>
-    :root  {
-      --bg:#0a0a0f;
-      --bg-card:#111118;
-      --bg-elevated:#181822;
-      --gold:#c9a84c;
-      --gold-soft:#e8d48b;
-      --blue:#4a7dff;
-      --blue-soft:#7fa3ff;
-      --mint:#34d399;
-      --coral:#f87171;
-      --text:#e4e4e7;
-      --text-dim:#71717a;
-      --text-muted:#3f3f46;
-      --glass:rgba(255,255,255,0.04);
-      --border:rgba(255,255,255,0.06);
-    }
-    * {
-      margin:0;
-      padding:0;
-      box-sizing:border-box
-    }
-    html {
-      scroll-behavior:smooth;
-      font-size:16px;
-      scroll-snap-type:y mandatory;
-      overflow-y:scroll
-    }
-    body {
-      font-family:'Noto Sans KR',sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      overflow-x:hidden;
-      -webkit-font-smoothing:antialiased
-    }
-    section {
-      min-height:100vh;
-      min-height:100svh;
-      padding:80px 28px 50px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      position:relative;
-      scroll-snap-align:start;
-      scroll-snap-stop:always;
-      overflow:hidden
-    }
-    .reveal {
-      opacity:0;
-      transform:translateY(28px);
-      transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1)
-    }
-    .reveal.visible {
-      opacity:1;
-      transform:translateY(0)
-    }
-    .rv1 {
-      transition-delay:.12s
-    }
-    .rv2 {
-      transition-delay:.24s
-    }
-    .rv3 {
-      transition-delay:.36s
-    }
-    .rv4 {
-      transition-delay:.48s
-    }
-    .stag {
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      font-size:10px;
-      font-weight:700;
-      letter-spacing:2.5px;
-      text-transform:uppercase;
-      padding:5px 12px;
-      border-radius:4px;
-      margin-bottom:22px;
-      background:rgba(201,168,76,.08);
-      color:var(--gold);
-      border:1px solid rgba(201,168,76,.15)
-    }
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>
+      경영학전공 — 차의과학대학교
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+    <style>
+      :root  {
 
-    /* Nav dots */
-    .nav-dots {
-      position:fixed;
-      right:14px;
-      top:50%;
-      transform:translateY(-50%);
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      z-index:100
-    }
-    .nav-dot {
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      border:1.5px solid rgba(255,255,255,.15);
-      background:transparent;
-      cursor:pointer;
-      transition:all .3s;
-      padding:0
-    }
-    .nav-dot.active {
-      background:var(--gold);
-      border-color:var(--gold);
-      transform:scale(1.3)
-    }
+    --bg: #0a0a0f;
+    --bg-card: #111118;
+    --gold: #c9a84c;
+    --gold-soft: #e8d48b;
+    --blue: #4a7dff;
+    --blue-soft: #7fa3ff;
+    --mint: #34d399;
+    --coral: #f87171;
+    --purple: #a78bfa;
+    --text: #e4e4e7;
+    --text-dim: #71717a;
+    --text-muted: #3f3f46;
+    --glass: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.06);
+}
 
-    /* ══ S1 HERO ══ */
-    .hero {
-      background:var(--bg);
-      text-align:center;
-      padding:100px 28px 70px
-    }
-    .hero::before {
-      content:'';
-      position:absolute;
-      inset:-50%;
-      width:200%;
-      height:200%;
-      background:radial-gradient(ellipse at 30% 40%,rgba(201,168,76,.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 60%,rgba(74,125,255,.04) 0%,transparent 50%);
-      animation:hGlow 16s ease-in-out infinite alternate
-    }
-    @keyframes hGlow {
-      0% {
-        transform:translate(0,0) rotate(0)
-      }
-      100% {
-        transform:translate(-3%,2%) rotate(2deg)
-      }
-    }
-    .hero-ey {
-      font-size:11px;
-      letter-spacing:5px;
-      text-transform:uppercase;
-      color:var(--gold);
-      margin-bottom:30px;
-      position:relative
-    }
-    .hero h1 {
-      font-family:'DM Serif Display',serif;
-      font-size:clamp(28px,8vw,48px);
-      font-weight:400;
-      line-height:1.4;
-      position:relative;
-      margin-bottom:22px;
-      color:#fff
-    }
-    .hero h1 .ac {
-      color:var(--gold)
-    }
-    .hero-sub {
-      font-size:15px;
-      line-height:1.8;
-      color:var(--text-dim);
-      max-width:320px;
-      margin:0 auto 40px;
-      position:relative
-    }
-    .hero-sub .hl {
-      color:var(--gold-soft);
-      font-weight:500
-    }
-    .scroll-hint {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:6px;
-      font-size:10px;
-      color:rgba(255,255,255,.2);
-      letter-spacing:2px;
-      position:relative
-    }
-    .scroll-arrow {
-      width:1px;
-      height:40px;
-      background:linear-gradient(to bottom,rgba(201,168,76,.5),transparent);
-      animation:sPulse 2s ease-in-out infinite
-    }
-    @keyframes sPulse {
-      0%,100% {
-        opacity:.3;
-        transform:scaleY(1)
-      }
-      50% {
-        opacity:1;
-        transform:scaleY(1.3)
-      }
-    }
+*  {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    /* ══ S2 NUMBERS ══ */
-    .numbers {
-      background:var(--bg);
-      padding:80px 28px 60px
-    }
-    .numbers h2 {
-      font-family:'DM Serif Display',serif;
-      font-size:clamp(24px,6vw,36px);
-      color:#fff;
-      margin-bottom:8px;
-      line-height:1.3
-    }
-    .numbers .sub {
-      font-size:13px;
-      color:var(--text-dim);
-      margin-bottom:32px
-    }
-    .sg {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-bottom:28px
-    }
-    .sc {
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:24px 18px;
-      text-align:center;
-      position:relative;
-      overflow:hidden
-    }
-    .sc::before {
-      content:'';
-      position:absolute;
-      top:0;
-      left:0;
-      right:0;
-      height:2px
-    }
-    .sc:nth-child(1)::before {
-      background:var(--gold)
-    }
-    .sc:nth-child(2)::before {
-      background:var(--blue)
-    }
-    .sc:nth-child(3)::before {
-      background:var(--mint)
-    }
-    .sc:nth-child(4)::before {
-      background:var(--coral)
-    }
-    .sn {
-      font-family:'DM Serif Display',serif;
-      font-size:36px;
-      font-weight:400;
-      margin-bottom:4px
-    }
-    .sc:nth-child(1) .sn {
-      color:var(--gold)
-    }
-    .sc:nth-child(2) .sn {
-      color:var(--blue)
-    }
-    .sc:nth-child(3) .sn {
-      color:var(--mint)
-    }
-    .sc:nth-child(4) .sn {
-      color:var(--coral)
-    }
-    .sl {
-      font-size:12px;
-      color:var(--text-dim)
-    }
-    .ss {
-      font-size:10px;
-      color:var(--text-muted);
-      margin-top:2px
-    }
-    .bw {
-      margin-bottom:10px
-    }
-    .bl {
-      display:flex;
-      justify-content:space-between;
-      font-size:11px;
-      color:var(--text-dim);
-      margin-bottom:4px
-    }
-    .bt {
-      height:6px;
-      background:var(--bg-card);
-      border-radius:6px;
-      overflow:hidden
-    }
-    .bf {
-      height:100%;
-      border-radius:6px;
-      transition:width 1.2s cubic-bezier(.22,.61,.36,1);
-      width:0
-    }
-    .bf.g {
-      background:linear-gradient(90deg,var(--gold),var(--gold-soft))
-    }
-    .bf.b {
-      background:linear-gradient(90deg,var(--blue),var(--blue-soft))
-    }
-    .bf.m {
-      background:linear-gradient(90deg,#059669,var(--mint))
-    }
+html  {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+}
 
-    /* ══ S3 IDENTITY ══ */
-    .identity {
-      background:linear-gradient(170deg,#0d1117,#111827);
-      padding:80px 28px 60px
-    }
-    .identity h2 {
-      font-family:'DM Serif Display',serif;
-      font-size:clamp(24px,6vw,36px);
-      color:#fff;
-      line-height:1.4;
-      margin-bottom:24px
-    }
-    .identity h2 .ac {
-      color:var(--gold)
-    }
-    .venn {
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      margin:24px 0;
-      position:relative;
-      height:170px
-    }
-    .vc {
-      width:135px;
-      height:135px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:12px;
-      font-weight:700;
-      text-align:center;
-      line-height:1.4;
-      position:absolute
-    }
-    .vc.med {
-      background:rgba(52,211,153,.1);
-      border:1.5px solid rgba(52,211,153,.3);
-      left:calc(50% - 100px);
-      color:var(--mint)
-    }
-    .vc.biz {
-      background:rgba(201,168,76,.1);
-      border:1.5px solid rgba(201,168,76,.3);
-      left:calc(50% - 35px);
-      color:var(--gold-soft)
-    }
-    .vm {
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      background:var(--glass);
-      backdrop-filter:blur(8px);
-      border:1.5px solid rgba(255,255,255,.12);
-      border-radius:10px;
-      padding:7px 14px;
-      font-size:10px;
-      font-weight:700;
-      color:#fff;
-      text-align:center;
-      bottom:8px;
-      letter-spacing:.5px
-    }
-    .chips {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin:20px 0
-    }
-    .chip {
-      padding:6px 14px;
-      border-radius:24px;
-      font-size:11px;
-      font-weight:500;
-      background:var(--glass);
-      border:1px solid var(--border);
-      color:rgba(255,255,255,.5);
-      transition:all .3s
-    }
-    .chip:hover {
-      border-color:var(--gold);
-      color:var(--gold-soft)
-    }
+body  {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
 
-    /* ══ S4 RESEARCH ══ */
-    .research {
-      background:var(--bg);
-      padding:80px 28px 60px
-    }
-    .research h2 {
-      font-family:'DM Serif Display',serif;
-      font-size:clamp(24px,6vw,36px);
-      color:#fff;
-      margin-bottom:8px
-    }
-    .research .sub {
-      font-size:13px;
-      color:var(--text-dim);
-      margin-bottom:28px
-    }
-    .rcards {
-      display:flex;
-      gap:14px;
-      overflow-x:auto;
-      scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
-      padding-bottom:12px;
-      margin:0 -28px;
-      padding-left:28px;
-      padding-right:28px
-    }
-    .rcards::-webkit-scrollbar {
-      display:none
-    }
-    .rc {
-      min-width:260px;
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:24px 20px;
-      scroll-snap-align:start;
-      flex-shrink:0;
-      position:relative;
-      overflow:hidden
-    }
-    .rc::after {
-      content:'';
-      position:absolute;
-      top:0;
-      left:0;
-      width:100%;
-      height:2px
-    }
-    .rc:nth-child(1)::after {
-      background:var(--gold)
-    }
-    .rc:nth-child(2)::after {
-      background:var(--mint)
-    }
-    .rc:nth-child(3)::after {
-      background:var(--blue)
-    }
-    .rc .ri {
-      font-size:24px;
-      margin-bottom:14px
-    }
-    .rc h3 {
-      font-size:14px;
-      font-weight:700;
-      color:#fff;
-      margin-bottom:8px
-    }
-    .rc p {
-      font-size:12px;
-      color:var(--text-dim);
-      line-height:1.7
-    }
-    .rc .jr {
-      font-size:10px;
-      color:var(--text-muted);
-      margin-top:10px;
-      font-style:italic
-    }
-    .swh {
-      text-align:center;
-      font-size:11px;
-      color:var(--text-muted);
-      margin-top:8px
-    }
+section  {
 
-    /* ══ S5 CAREERS ══ */
-    .careers {
-      background:linear-gradient(170deg,#0d1117,#0f172a);
-      padding:80px 28px 60px
-    }
-    .careers h2 {
-      font-family:'DM Serif Display',serif;
-      font-size:clamp(24px,6vw,36px);
-      color:#fff;
-      margin-bottom:8px
-    }
-    .careers .sub {
-      font-size:13px;
-      color:var(--text-dim);
-      margin-bottom:28px
-    }
-    .cg {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px
-    }
-    .cc {
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:20px 16px
-    }
-    .cc h4 {
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      margin-bottom:10px
-    }
-    .cc:nth-child(1) h4 {
-      color:var(--gold)
-    }
-    .cc:nth-child(2) h4 {
-      color:var(--blue)
-    }
-    .cc:nth-child(3) h4 {
-      color:var(--mint)
-    }
-    .cc:nth-child(4) h4 {
-      color:var(--coral)
-    }
-    .cc ul {
-      list-style:none
-    }
-    .cc li {
-      font-size:13px;
-      color:var(--text-dim);
-      padding:4px 0;
-      border-bottom:1px solid var(--border)
-    }
-    .cc li:last-child {
-      border-bottom:none
-    }
-    .sr {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:24px
-    }
-    .sc2 {
-      padding:6px 14px;
-      border-radius:24px;
-      font-size:11px;
-      font-weight:600;
-      border:1px solid
-    }
-    .sc2.bio {
-      color:var(--mint);
-      border-color:rgba(52,211,153,.3);
-      background:rgba(52,211,153,.06)
-    }
-    .sc2.fin {
-      color:var(--gold);
-      border-color:rgba(201,168,76,.3);
-      background:rgba(201,168,76,.06)
-    }
-    .sc2.it {
-      color:var(--blue);
-      border-color:rgba(74,125,255,.3);
-      background:rgba(74,125,255,.06)
-    }
-    .sc2.hosp {
-      color:var(--coral);
-      border-color:rgba(248,113,113,.3);
-      background:rgba(248,113,113,.06)
-    }
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 70px 28px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow: hidden;
+}
 
-    /* ══ S6 CURRICULUM ══ */
-    .curriculum {
-      background:var(--bg);
-      padding:80px 28px 60px
-    }
-    .curriculum h2 {
-      font-family:'DM Serif Display',serif;
-      font-size:clamp(24px,6vw,36px);
-      color:#fff;
-      margin-bottom:8px
-    }
-    .curriculum .sub {
-      font-size:13px;
-      color:var(--text-dim);
-      margin-bottom:32px
-    }
-    .tl {
-      position:relative;
-      padding-left:30px
-    }
-    .tl::before {
-      content:'';
-      position:absolute;
-      left:8px;
-      top:0;
-      bottom:0;
-      width:2px;
-      background:linear-gradient(to bottom,var(--gold),var(--blue),var(--mint));
-      border-radius:2px
-    }
-    .ti {
-      position:relative;
-      margin-bottom:28px
-    }
-    .ti::before {
-      content:'';
-      position:absolute;
-      left:-26px;
-      top:6px;
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      border:2.5px solid var(--gold);
-      background:var(--bg)
-    }
-    .ti:nth-child(2)::before {
-      border-color:var(--blue)
-    }
-    .ti:nth-child(3)::before {
-      border-color:var(--mint)
-    }
-    .ty {
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:1px;
-      margin-bottom:4px
-    }
-    .ti:nth-child(1) .ty {
-      color:var(--gold)
-    }
-    .ti:nth-child(2) .ty {
-      color:var(--blue)
-    }
-    .ti:nth-child(3) .ty {
-      color:var(--mint)
-    }
-    .tt {
-      font-size:15px;
-      font-weight:700;
-      color:#fff;
-      margin-bottom:6px
-    }
-    .tg {
-      display:flex;
-      flex-wrap:wrap;
-      gap:5px
-    }
-    .tg span {
-      font-size:10px;
-      padding:3px 10px;
-      border-radius:20px;
-      background:rgba(255,255,255,.04);
-      color:var(--text-dim);
-      border:1px solid var(--border)
-    }
+/* Reveal */
+.reveal  {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .6s ease, transform .6s ease;
+}
 
-    /* ══ S7 CTA ══ */
-    .cta-s {
-      background:var(--bg);
-      text-align:center;
-      padding:80px 28px 60px
-    }
-    .cta-s h2 {
-      font-family:'DM Serif Display',serif;
-      font-size:clamp(24px,6vw,36px);
-      color:#fff;
-      margin-bottom:12px;
-      line-height:1.4
-    }
-    .cta-s .sub {
-      font-size:13px;
-      color:var(--text-dim);
-      margin-bottom:32px
-    }
-    .cta-btn {
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background:linear-gradient(135deg,var(--gold),#b8942e);
-      color:#0a0a0f;
-      border:none;
-      border-radius:50px;
-      padding:16px 28px;
-      font-size:14px;
-      font-weight:700;
-      font-family:inherit;
-      cursor:pointer;
-      transition:transform .2s,box-shadow .3s
-    }
-    .cta-btn:hover {
-      transform:translateY(-2px);
-      box-shadow:0 8px 30px rgba(201,168,76,.3)
-    }
-    .cta-btn:active {
-      transform:scale(.97)
-    }
-    .pd {
-      width:8px;
-      height:8px;
-      background:#0a0a0f;
-      border-radius:50%;
-      animation:cp 2s ease-in-out infinite
-    }
-    @keyframes cp {
-      0%,100% {
-        opacity:1;
-        transform:scale(1)
-      }
-      50% {
-        opacity:.5;
-        transform:scale(1.5)
-      }
-    }
-    .cn {
-      font-size:11px;
-      color:var(--text-muted);
-      margin-top:16px;
-      line-height:1.7
-    }
-    .footer {
-      padding:30px 28px;
-      font-size:11px;
-      color:var(--text-muted);
-      text-align:center;
-      line-height:1.8;
-      border-top:1px solid var(--border)
-    }
-    .footer a {
-      color:var(--gold);
-      text-decoration:none
-    }
+.reveal.visible  {
+    opacity: 1;
+    transform: translateY(0);
+}
 
-    /* ══ PIP ══ */
-    #heygen-pip-container {
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      z-index:9999;
-      border-radius:16px;
-      overflow:visible;
-      box-shadow:0 8px 32px rgba(0,0,0,.5);
-      transition:width .3s,height .3s,opacity .3s
-    }
-    #heygen-pip-container.hidden {
-      opacity:0;
-      pointer-events:none;
-      transform:scale(.8);
-      transition:opacity .3s,transform .3s
-    }
-    #heygen-pip-container.dragging {
-      transition:none;
-      user-select:none
-    }
-    #heygen-pip {
-      width:380px;
-      height:214px;
-      border:none;
-      border-radius:16px;
-      background:var(--bg-card);
-      display:block;
-      transition:width .3s,height .3s
-    }
-    .pdb {
-      position:absolute;
-      pointer-events:auto;
-      cursor:grab;
-      z-index:5
-    }
-    .pdb:active {
-      cursor:grabbing
-    }
-    .pdb.top {
-      top:0;
-      left:0;
-      right:0;
-      height:25px;
-      border-radius:16px 16px 0 0
-    }
-    .pdb.left {
-      top:25px;
-      left:0;
-      bottom:0;
-      width:8px
-    }
-    .pdb.right {
-      top:25px;
-      right:0;
-      bottom:0;
-      width:8px
-    }
-    .pdb.bottom {
-      bottom:0;
-      left:0;
-      right:0;
-      height:8px;
-      border-radius:0 0 16px 16px
-    }
-    .phg {
-      position:absolute;
-      top:0;
-      left:0;
-      right:0;
-      height:50px;
-      border-radius:16px 16px 0 0;
-      background:linear-gradient(to bottom,rgba(0,0,0,.5),transparent);
-      opacity:0;
-      transition:opacity .2s;
-      pointer-events:none;
-      z-index:6
-    }
-    #heygen-pip-container:hover .phg {
-      opacity:1
-    }
-    .pc {
-      position:absolute;
-      top:8px;
-      right:8px;
-      display:flex;
-      gap:6px;
-      opacity:0;
-      transition:opacity .2s;
-      pointer-events:none;
-      z-index:10
-    }
-    #heygen-pip-container:hover .pc {
-      opacity:1;
-      pointer-events:auto
-    }
-    .pcb {
-      width:28px;
-      height:28px;
-      border-radius:50%;
-      border:none;
-      background:rgba(255,255,255,.15);
-      backdrop-filter:blur(4px);
-      color:#fff;
-      font-size:16px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      transition:background .2s;
-      line-height:1;
-      font-family:inherit
-    }
-    .pcb:hover {
-      background:rgba(255,255,255,.3)
-    }
-    .pcb.cb:hover {
-      background:rgba(255,80,60,.7)
-    }
-    #heygen-pip-container.minimized {
-      width:120px!important;
-      height:68px!important;
-      border-radius:10px
-    }
-    #heygen-pip-container.minimized #heygen-pip {
-      width:120px!important;
-      height:68px!important;
-      border-radius:10px
-    }
-    #heygen-pip-container.minimized .pdb.top {
-      height:15px;
-      border-radius:10px 10px 0 0
-    }
-    #heygen-pip-container.minimized .phg {
-      border-radius:10px 10px 0 0
-    }
-    #heygen-pip-toggle {
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      width:64px;
-      height:64px;
-      border-radius:50%;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      font-size:26px;
-      background:linear-gradient(135deg,var(--gold),#b8942e);
-      border:2.5px solid rgba(201,168,76,.4);
-      color:#0a0a0f;
-      cursor:pointer;
-      z-index:10000;
-      box-shadow:0 4px 24px rgba(201,168,76,.3);
-      transition:all .3s
-    }
-    #heygen-pip-toggle:hover {
-      transform:scale(1.08);
-      box-shadow:0 6px 30px rgba(201,168,76,.5);
-      border-color:var(--gold)
-    }
-    #heygen-pip-toggle:active {
-      transform:scale(.95)
-    }
-    #heygen-pip-container.hidden~#heygen-pip-toggle {
-      display:flex!important
-    }
-    @media(max-width:440px) {
-      #heygen-pip {
-        width:280px;
-        height:158px
-      }
-      #heygen-pip-container.minimized #heygen-pip {
-        width:100px!important;
-        height:56px!important
-      }
-      #heygen-pip-container.minimized {
-        width:100px!important;
-        height:56px!important
-      }
-      .sg,.cg {
-        gap:10px
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="nav-dots" id="navDots">
-  </div>
-  <!-- S1: HERO -->
-  <section class="hero" id="s1" data-dot-dark>
-    <p class="hero-ey reveal">CHA UNIVERSITY</p>
-    <h1 class="reveal rv1">
-      병원도, 금융도,<br>
-      바이오 스타트업도<br>
-      <span class="ac">경영을 아는 사람</span>을<br>
-      찾고 있습니다.
-    </h1>
-    <p class="hero-sub reveal rv2">
-      <span class="hl">바이오헬스케어를 이해하는 경영인</span>은<br>어디서 키울까요?
-    </p>
-    <div class="scroll-hint reveal rv3">
-      <span>SCROLL</span>
-      <div class="scroll-arrow">
-      </div>
+.rv1  {
+    transition-delay: .1s;
+}
+.rv2  {
+    transition-delay: .2s;
+}
+.rv3  {
+    transition-delay: .3s;
+}
+.rv4  {
+    transition-delay: .4s;
+}
+
+/* Tag */
+.stag  {
+    display: inline-flex;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 4px;
+    margin-bottom: 18px;
+    background: rgba(201,168,76,.08);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,.15);
+}
+
+/* Section title */
+.sh2  {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 6vw, 34px);
+    color: #fff;
+    line-height: 1.35;
+    margin-bottom: 6px;
+}
+
+.sh2 .ac  {
+    color: var(--gold);
+}
+
+.ssub  {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    line-height: 1.7;
+}
+
+/* Cards */
+.card-grid  {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.card  {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before  {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+}
+
+.card h4  {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: .5px;
+}
+
+.card p, .card li  {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+}
+
+.card ul  {
+    list-style: none;
+}
+
+.card li  {
+    padding: 2px 0;
+}
+
+/* Color accents for cards */
+.c-gold::before  {
+    background: var(--gold);
+}
+.c-gold h4  {
+    color: var(--gold);
+}
+
+.c-blue::before  {
+    background: var(--blue);
+}
+.c-blue h4  {
+    color: var(--blue);
+}
+
+.c-mint::before  {
+    background: var(--mint);
+}
+.c-mint h4  {
+    color: var(--mint);
+}
+
+.c-coral::before  {
+    background: var(--coral);
+}
+.c-coral h4  {
+    color: var(--coral);
+}
+
+.c-purple::before  {
+    background: var(--purple);
+}
+.c-purple h4  {
+    color: var(--purple);
+}
+
+/* Stat big number */
+.stat-big  {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--gold);
+    margin-bottom: 4px;
+}
+
+/* Bar chart */
+.bar-wrap  {
+    margin-bottom: 8px;
+}
+
+.bar-label  {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 3px;
+}
+
+.bar-track  {
+    height: 6px;
+    background: var(--bg-card);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.bar-fill  {
+    height: 100%;
+    border-radius: 6px;
+    width: 0;
+    transition: width 1.2s ease;
+}
+
+/* Chips */
+.chips  {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.chip  {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    background: var(--glass);
+}
+
+/* Venn */
+.venn  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 160px;
+    margin: 16px 0;
+}
+
+.vc  {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+    position: absolute;
+}
+
+/* Swipe cards */
+.swipe  {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -28px;
+    padding: 0 28px 10px;
+}
+
+.swipe::-webkit-scrollbar  {
+    display: none;
+}
+
+.swipe .card  {
+    min-width: 250px;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+}
+
+/* Timeline */
+.tl  {
+    position: relative;
+    padding-left: 28px;
+}
+
+.tl::before  {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), var(--blue), var(--mint));
+}
+
+.ti  {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.ti::before  {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 5px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 2.5px solid var(--gold);
+    background: var(--bg);
+}
+
+/* Nav dots */
+.nav-dots  {
+    position: fixed;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+}
+
+.nav-dot  {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,.12);
+    background: transparent;
+    cursor: pointer;
+    transition: all .3s;
+    padding: 0;
+}
+
+.nav-dot.active  {
+    background: var(--gold);
+    border-color: var(--gold);
+    transform: scale(1.4);
+}
+
+/* ── HERO ── */
+.hero  {
+    text-align: center;
+    padding: 100px 28px 70px;
+}
+
+.hero::before  {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 40%, rgba(201,168,76,.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, rgba(74,125,255,.04) 0%, transparent 50%);
+    animation: hGlow 16s ease-in-out infinite alternate;
+}
+
+@keyframes hGlow  {
+    0%  {
+        transform: translate(0,0) }
+        100%  {
+            transform: translate(-3%,2%) rotate(2deg) }
+        }
+
+        .hero-ey  {
+            font-size: 11px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .hero h1  {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(28px,8vw,48px);
+            font-weight: 400;
+            line-height: 1.4;
+            position: relative;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .hero-sub  {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dim);
+            max-width: 320px;
+            margin: 0 auto 36px;
+            position: relative;
+        }
+
+        .hero-sub .hl  {
+            color: var(--gold-soft);
+            font-weight: 500;
+        }
+
+        .scroll-arrow  {
+            width: 1px;
+            height: 36px;
+            background: linear-gradient(to bottom, rgba(201,168,76,.5), transparent);
+            animation: sp 2s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes sp  {
+            0%,100%  {
+                opacity: .3 }
+                50%  {
+                    opacity: 1 }
+                }
+
+                /* Footer */
+                .footer  {
+                    padding: 28px;
+                    font-size: 11px;
+                    color: var(--text-muted);
+                    text-align: center;
+                    line-height: 1.8;
+                    border-top: 1px solid var(--border);
+                }
+
+                .footer a  {
+                    color: var(--gold);
+                    text-decoration: none;
+                }
+
+                /* ── PIP ── */
+                #heygen-pip-container  {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    z-index: 9999;
+                    border-radius: 16px;
+                    overflow: visible;
+                    box-shadow: 0 8px 32px rgba(0,0,0,.5);
+                    transition: width .3s, height .3s, opacity .3s;
+                }
+
+                #heygen-pip-container.hidden  {
+                    opacity: 0;
+                    pointer-events: none;
+                    transform: scale(.8);
+                }
+
+                #heygen-pip-container.dragging  {
+                    transition: none;
+                }
+
+                #heygen-pip  {
+                    width: 380px;
+                    height: 214px;
+                    border: none;
+                    border-radius: 16px;
+                    background: var(--bg-card);
+                    display: block;
+                    transition: width .3s, height .3s;
+                }
+
+                .pdb  {
+                    position: absolute;
+                    pointer-events: auto;
+                    cursor: grab;
+                    z-index: 5;
+                }
+
+                .pdb:active  {
+                    cursor: grabbing;
+                }
+
+                .pdb.top  {
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 25px;
+                    border-radius: 16px 16px 0 0;
+                }
+
+                .pdb.left  {
+                    top: 25px;
+                    left: 0;
+                    bottom: 0;
+                    width: 8px;
+                }
+
+                .pdb.right  {
+                    top: 25px;
+                    right: 0;
+                    bottom: 0;
+                    width: 8px;
+                }
+
+                .pdb.bottom  {
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 8px;
+                }
+
+                .phg  {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 50px;
+                    border-radius: 16px 16px 0 0;
+                    background: linear-gradient(to bottom, rgba(0,0,0,.5), transparent);
+                    opacity: 0;
+                    transition: opacity .2s;
+                    pointer-events: none;
+                    z-index: 6;
+                }
+
+                #heygen-pip-container:hover .phg  {
+                    opacity: 1;
+                }
+
+                .pc  {
+                    position: absolute;
+                    top: 8px;
+                    right: 8px;
+                    display: flex;
+                    gap: 6px;
+                    opacity: 0;
+                    transition: opacity .2s;
+                    pointer-events: none;
+                    z-index: 10;
+                }
+
+                #heygen-pip-container:hover .pc  {
+                    opacity: 1;
+                    pointer-events: auto;
+                }
+
+                .pcb  {
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                    border: none;
+                    background: rgba(255,255,255,.15);
+                    backdrop-filter: blur(4px);
+                    color: #fff;
+                    font-size: 16px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background .2s;
+                    line-height: 1;
+                }
+
+                .pcb:hover  {
+                    background: rgba(255,255,255,.3);
+                }
+
+                .pcb.cb:hover  {
+                    background: rgba(255,80,60,.7);
+                }
+
+                #heygen-pip-container.minimized  {
+                    width: 120px !important;
+                    height: 68px !important;
+                    border-radius: 10px;
+                }
+
+                #heygen-pip-container.minimized #heygen-pip  {
+                    width: 120px !important;
+                    height: 68px !important;
+                    border-radius: 10px;
+                }
+
+                #heygen-pip-toggle  {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 64px;
+                    height: 64px;
+                    border-radius: 50%;
+                    display: none;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 26px;
+                    background: linear-gradient(135deg, var(--gold), #b8942e);
+                    border: 2.5px solid rgba(201,168,76,.4);
+                    color: #0a0a0f;
+                    cursor: pointer;
+                    z-index: 10000;
+                    box-shadow: 0 4px 24px rgba(201,168,76,.3);
+                    transition: all .3s;
+                }
+
+                #heygen-pip-container.hidden ~ #heygen-pip-toggle  {
+                    display: flex !important;
+                }
+
+                @media(max-width:440px)  {
+                    #heygen-pip  {
+                        width: 280px;
+                        height: 158px;
+                    }
+                }
+    </style>
+  </head>
+  <body>
+    <div class="nav-dots" id="navDots">
     </div>
-  </section>
-  <!-- S2: NUMBERS -->
-  <section class="numbers" id="s2" data-dot-dark>
-    <div class="stag reveal">BY THE NUMBERS</div>
-    <h2 class="reveal">숫자가 증명합니다</h2>
-    <p class="sub reveal rv1">경영학전공 졸업생 실적</p>
-    <div class="sg">
-      <div class="sc reveal rv1">
-        <div class="sn" data-count="88">0</div>
-        <div class="sl">취업률 (%)</div>
-        <div class="ss">전국 평균 대비 우수</div>
-      </div>
-      <div class="sc reveal rv2">
-        <div class="sn" data-count="24">0</div>
-        <div class="sl">바이오헬스케어 (%)</div>
-        <div class="ss">산업별 진출 1위</div>
-      </div>
-      <div class="sc reveal rv3">
-        <div class="sn" data-count="48">0</div>
-        <div class="sl">경영기획 직무 (%)</div>
-        <div class="ss">최다 직무 분야</div>
-      </div>
-      <div class="sc reveal rv4">
-        <div class="sn" data-count="196">0</div>
-        <div class="sl">취업자 수 (명)</div>
-        <div class="ss">최근 졸업생 기준</div>
-      </div>
-    </div>
-    <div class="bw reveal rv2">
-      <div class="bl">
-        <span>경영기획</span>
-        <span>48.9%</span>
-      </div>
-      <div class="bt">
-        <div class="bf g" data-width="49">
-        </div>
-      </div>
-    </div>
-    <div class="bw reveal rv3">
-      <div class="bl">
-        <span>회계·세무·금융</span>
-        <span>20.8%</span>
-      </div>
-      <div class="bt">
-        <div class="bf b" data-width="21">
-        </div>
-      </div>
-    </div>
-    <div class="bw reveal rv4">
-      <div class="bl">
-        <span>마케팅</span>
-        <span>14.0%</span>
-      </div>
-      <div class="bt">
-        <div class="bf m" data-width="14">
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- S3: IDENTITY -->
-  <section class="identity" id="s3" data-dot-dark>
-    <div class="stag reveal">ONLY ONE</div>
-    <h2 class="reveal">
-      전국에서 <span class="ac">유일하게</span>
-      <br>
-      의과학대학 안에 있는<br>
-      경영학 전공
-    </h2>
-    <div class="venn reveal rv1">
-      <div class="vc med">바이오<br>헬스케어</div>
-      <div class="vc biz">경영<br>전략</div>
-      <div class="vm">헬스케어 비즈니스 리더</div>
-    </div>
-    <div class="chips reveal rv2">
-      <span class="chip">🏥 차병원그룹</span>
-      <span class="chip">삼성바이오로직스</span>
-      <span class="chip">하나은행</span>
-      <span class="chip">쿠팡</span>
-      <span class="chip">현대자동차</span>
-      <span class="chip">CJ올리브영</span>
-      <span class="chip" style="border-color:rgba(201,168,76,.2);color:var(--gold-soft)">+ 더 보기</span>
-    </div>
-    <p style="font-size:13px;color:var(--text-muted);line-height:1.7;margin-top:12px" class="reveal rv3">
-      졸업생 10.9%가 차병원그룹에 취업<br>
-      의료경영 · 바이오산업론 · 헬스케어 데이터분석<br>
-      <span style="color:var(--text-dim)">다른 대학에는 없는 특화 커리큘럼</span>
-    </p>
-  </section>
-  <!-- S4: RESEARCH -->
-  <section class="research" id="s4" data-dot-dark>
-    <div class="stag reveal">RESEARCH</div>
-    <h2 class="reveal">세계가 인정한 연구</h2>
-    <p class="sub reveal rv1">국내외 학술지 게재 성과</p>
-    <div class="rcards">
-      <div class="rc reveal rv1">
-        <div class="ri">🎯</div>
-        <h3>경영기획</h3>
-        <p>ESG 평가지표 개발, 기업지배구조 개선, AI 활용 시계열 예측 연구</p>
-        <div class="jr">Applied Economics Letters · Journal of Forecasting</div>
-      </div>
-      <div class="rc reveal rv2">
-        <div class="ri">📊</div>
-        <h3>마케팅</h3>
-        <p>AI 서비스 로봇 수용도, MZ세대 SNS 전략, K-콘텐츠 글로벌 시장 전략</p>
-        <div class="jr">Psychology &amp; Marketing · Int'l Journal of Hospitality Mgmt</div>
-      </div>
-      <div class="rc reveal rv3">
-        <div class="ri">💰</div>
-        <h3>회계재무</h3>
-        <p>제약·바이오 R&amp;D 회계처리, 주주권 행사와 이익조정, 신용평가 적시성</p>
-        <div class="jr">회계학연구 · 경영학연구</div>
-      </div>
-    </div>
-    <p class="swh">← 스와이프 →</p>
-  </section>
-  <!-- S5: CAREERS -->
-  <section class="careers" id="s5" data-dot-dark>
-    <div class="stag reveal">CAREERS</div>
-    <h2 class="reveal">선배들이 간 곳</h2>
-    <p class="sub reveal rv1">주요 취업처</p>
-    <div class="cg">
-      <div class="cc reveal rv1">
-        <h4>금융·증권</h4>
-        <ul>
-          <li>하나은행</li>
-          <li>SK증권</li>
-          <li>신한은행</li>
-          <li>KB국민은행</li>
-        </ul>
-      </div>
-      <div class="cc reveal rv2">
-        <h4>대기업</h4>
-        <ul>
-          <li>현대자동차</li>
-          <li>삼성바이오로직스</li>
-          <li>롯데</li>
-          <li>CJ올리브영</li>
-        </ul>
-      </div>
-      <div class="cc reveal rv3">
-        <h4>IT·플랫폼</h4>
-        <ul>
-          <li>쿠팡</li>
-          <li>스마일게이트</li>
-          <li>메가존클라우드</li>
-          <li>이랜드</li>
-        </ul>
-      </div>
-      <div class="cc reveal rv4">
-        <h4>병원·헬스케어</h4>
-        <ul>
-          <li>세브란스병원</li>
-          <li>강남세브란스</li>
-          <li>차병원 계열</li>
-          <li>제약회사</li>
-        </ul>
-      </div>
-    </div>
-    <div class="sr reveal rv3">
-      <span class="sc2 bio">바이오헬스케어 24.9%</span>
-      <span class="sc2 fin">금융 19.5%</span>
-      <span class="sc2 it">IT 19.0%</span>
-      <span class="sc2 hosp">차병원그룹 10.9%</span>
-    </div>
-  </section>
-  <!-- S6: CURRICULUM -->
-  <section class="curriculum" id="s6" data-dot-dark>
-    <div class="stag reveal">ROADMAP</div>
-    <h2 class="reveal">3가지 트랙으로 성장</h2>
-    <p class="sub reveal rv1">경영학 세부전공 로드맵</p>
-    <div class="tl">
-      <div class="ti reveal rv1">
-        <div class="ty">경영기획</div>
-        <div class="tt">전략 수립 · ESG 경영 · 조직 설계</div>
-        <div class="tg">
-          <span>기업전략</span>
-          <span>ESG</span>
-          <span>컨설팅</span>
-          <span>조직관리</span>
-        </div>
-      </div>
-      <div class="ti reveal rv2">
-        <div class="ty">마케팅</div>
-        <div class="tt">소비자 행동 · 디지털 마케팅 · 브랜드</div>
-        <div class="tg">
-          <span>소비자행동</span>
-          <span>SNS전략</span>
-          <span>브랜드매니저</span>
-          <span>AI마케팅</span>
-        </div>
-      </div>
-      <div class="ti reveal rv3">
-        <div class="ty">회계재무</div>
-        <div class="tt">재무제표 · 투자의사결정 · 리스크 관리</div>
-        <div class="tg">
-          <span>CPA</span>
-          <span>애널리스트</span>
-          <span>펀드매니저</span>
-          <span>바이오R&amp;D</span>
-        </div>
-      </div>
-    </div>
-    <p style="font-size:12px;color:var(--text-muted);margin-top:20px;line-height:1.7" class="reveal rv4">
-      + 차의과학대 특화: <span style="color:var(--gold-soft)">헬스케어 비즈니스</span> · <span style="color:var(--blue-soft)">비즈니스 애널리틱스</span>
-    </p>
-  </section>
-  <!-- S7: CTA -->
-  <section class="cta-s" id="s7" data-dot-dark>
-    <div class="stag reveal">CHAT</div>
-    <h2 class="reveal">궁금한 게 있다면,<br>직접 물어보세요</h2>
-    <p class="sub reveal rv1">AI 아바타가 실시간으로 답해드립니다</p>
-    <div class="reveal rv2">
-      <button class="cta-btn" onclick="showPIP()">
-        <span class="pd">
+    <!-- ═══ S0: HERO ═══ -->
+    <section class="hero" id="s0">
+      <p class="hero-ey reveal">
+        CHA UNIVERSITY
+      </p>
+      <h1 class="reveal rv1">
+        병원도, 금융도,
+        <br/>
+        바이오 스타트업도
+        <br/>
+        <span class="ac">
+          경영을 아는 사람
         </span>
-        AI 아바타와 대화하기
-      </button>
-      <p class="cn">화면 우측 하단의 AI 아바타에게<br>언제든지 질문할 수 있습니다</p>
+        을
+        <br/>
+        찾고 있습니다.
+      </h1>
+      <p class="hero-sub reveal rv2">
+        <span class="hl">
+          바이오헬스케어를 이해하는 경영인
+        </span>
+        은
+        <br/>
+        어디서 키울까요?
+      </p>
+      <div class="scroll-arrow reveal rv3">
+      </div>
+    </section>
+    <!-- ═══ S1: 연구분야 ═══ -->
+    <section id="s1" style="background:var(--bg)">
+      <div class="stag reveal">
+        01 · RESEARCH
+      </div>
+      <h2 class="sh2 reveal rv1">
+        경영학에서 실제로
+        <span class="ac">
+          어떤 연구
+        </span>
+        를 하나요?
+      </h2>
+      <div class="swipe">
+        <div class="card c-gold reveal rv1">
+          <h4>
+            🎯 경영기획
+          </h4>
+          <p>
+            ESG 평가지표 개발, 기업지배구조 개선, AI 시계열 예측
+          </p>
+          <p style="font-size:10px;color:var(--text-muted);margin-top:8px">
+            Applied Economics Letters · Journal of Forecasting
+          </p>
+        </div>
+        <div class="card c-mint reveal rv2">
+          <h4>
+            📊 마케팅
+          </h4>
+          <p>
+            AI 서비스 로봇 수용도, MZ세대 SNS 전략, K-콘텐츠 글로벌 전략
+          </p>
+          <p style="font-size:10px;color:var(--text-muted);margin-top:8px">
+            Psychology & Marketing · Int'l J. Hospitality Mgmt
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            💰 회계재무
+          </h4>
+          <p>
+            제약·바이오 R&D 회계, 주주권 행사와 이익조정, 신용평가 적시성
+          </p>
+          <p style="font-size:10px;color:var(--text-muted);margin-top:8px">
+            회계학연구 · 경영학연구
+          </p>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:6px">
+        ← 스와이프 →
+      </p>
+    </section>
+    <!-- ═══ S2: 통합교육 ═══ -->
+    <section id="s2" style="background:linear-gradient(170deg,#0d1117,#111827)">
+      <div class="stag reveal">
+        02 · INTEGRATED
+      </div>
+      <h2 class="sh2 reveal rv1">
+        왜 마케팅이나 인사관리도
+        <br/>
+        <span class="ac">
+          같이 배워야
+        </span>
+        하나요?
+      </h2>
+      <p class="ssub reveal rv2">
+        기업 경영은 퍼즐과 같아서, 한 조각만으로는 전체 그림을 볼 수 없어요.
+      </p>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            재무 전문가도
+          </h4>
+          <p>
+            마케팅 ROI 분석
+            <br/>
+            시장성 평가 필수
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            회계사도
+          </h4>
+          <p>
+            인건비 구조 이해
+            <br/>
+            부서별 예산 검토
+          </p>
+        </div>
+        <div class="card c-mint reveal rv3">
+          <h4>
+            실무 협업
+          </h4>
+          <p>
+            재무팀 ↔ 마케팅팀
+            <br/>
+            크로스펑션 프로젝트
+          </p>
+        </div>
+        <div class="card c-coral reveal rv4">
+          <h4>
+            협력기관
+          </h4>
+          <p>
+            조세재정연구원
+            <br/>
+            국회예산정책처
+            <br/>
+            금융감독원
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- ═══ S3: 취업전망 ═══ -->
+    <section id="s3" style="background:var(--bg)">
+      <div class="stag reveal">
+        03 · CAREERS
+      </div>
+      <h2 class="sh2 reveal rv1">
+        경영학만 전공해도
+        <br/>
+        <span class="ac">
+          취업이 되나요?
+        </span>
+      </h2>
+      <div class="stat-big reveal rv2" data-count="88">
+        0
+        <span style="font-size:20px">
+          %
+        </span>
+      </div>
+      <p class="ssub reveal rv2" style="margin-bottom:20px">
+        취업률 · 전국 평균 대비 우수
+      </p>
+      <div class="bar-wrap reveal rv3">
+        <div class="bar-label">
+          <span>
+            경영기획
+          </span>
+          <span>
+            48.9%
+          </span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="49" style="background:linear-gradient(90deg,var(--gold),var(--gold-soft))">
+          </div>
+        </div>
+      </div>
+      <div class="bar-wrap reveal rv3">
+        <div class="bar-label">
+          <span>
+            회계·세무·금융
+          </span>
+          <span>
+            20.8%
+          </span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="21" style="background:linear-gradient(90deg,var(--blue),var(--blue-soft))">
+          </div>
+        </div>
+      </div>
+      <div class="bar-wrap reveal rv4">
+        <div class="bar-label">
+          <span>
+            마케팅
+          </span>
+          <span>
+            14.0%
+          </span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="14" style="background:linear-gradient(90deg,#059669,var(--mint))">
+          </div>
+        </div>
+      </div>
+      <p class="reveal rv4" style="font-size:12px;color:var(--text-muted);margin-top:16px">
+        ✅ 경영학 단일전공만으로도 충분! 복수전공은 차별화 전략(선택)
+      </p>
+    </section>
+    <!-- ═══ S4: 세부전공 ═══ -->
+    <section id="s4" style="background:linear-gradient(170deg,#0d1117,#111827)">
+      <div class="stag reveal">
+        04 · MAJORS
+      </div>
+      <h2 class="sh2 reveal rv1">
+        경영학 안에도
+        <br/>
+        <span class="ac">
+          세부 전공
+        </span>
+        이 있나요?
+      </h2>
+      <div class="tl">
+        <div class="ti reveal rv1">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:3px">
+            경영기획
+          </div>
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px">
+            전략 수립 · ESG 경영 · 조직 설계
+          </div>
+          <div class="chips">
+            <span class="chip">
+              기업전략
+            </span>
+            <span class="chip">
+              ESG
+            </span>
+            <span class="chip">
+              컨설팅
+            </span>
+          </div>
+        </div>
+        <div class="ti reveal rv2" style="--dot-color:var(--blue)">
+          <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:3px">
+            마케팅
+          </div>
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px">
+            소비자 행동 · 디지털 마케팅 · 브랜드
+          </div>
+          <div class="chips">
+            <span class="chip">
+              SNS전략
+            </span>
+            <span class="chip">
+              AI마케팅
+            </span>
+            <span class="chip">
+              브랜드매니저
+            </span>
+          </div>
+        </div>
+        <div class="ti reveal rv3">
+          <div style="font-size:11px;font-weight:700;color:var(--mint);margin-bottom:3px">
+            회계재무
+          </div>
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px">
+            재무제표 · 투자의사결정 · 리스크 관리
+          </div>
+          <div class="chips">
+            <span class="chip">
+              CPA
+            </span>
+            <span class="chip">
+              애널리스트
+            </span>
+            <span class="chip">
+              펀드매니저
+            </span>
+          </div>
+        </div>
+      </div>
+      <p class="reveal rv4" style="font-size:12px;color:var(--text-muted);margin-top:14px">
+        + 차의과학대 특화:
+        <span style="color:var(--gold-soft)">
+          헬스케어 비즈니스
+        </span>
+        ·
+        <span style="color:var(--blue-soft)">
+          비즈니스 애널리틱스
+        </span>
+      </p>
+    </section>
+    <!-- ═══ S5: 미래가치 ═══ -->
+    <section id="s5" style="background:var(--bg)">
+      <div class="stag reveal">
+        05 · FUTURE
+      </div>
+      <h2 class="sh2 reveal rv1">
+        AI 시대에도
+        <br/>
+        경영학이
+        <span class="ac">
+          중요할까요?
+        </span>
+      </h2>
+      <p class="ssub reveal rv2">
+        오히려 더 중요해집니다!
+      </p>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            🧠 전략적 의사결정
+          </h4>
+          <p>
+            AI가 분석하지만, 최종 판단은 사람의 몫
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            🤝 이해관계자 조정
+          </h4>
+          <p>
+            주주·직원·고객 사이의 균형
+          </p>
+        </div>
+        <div class="card c-mint reveal rv3">
+          <h4>
+            ⚖️ 윤리적 경영
+          </h4>
+          <p>
+            ESG 경영, 데이터 윤리 판단
+          </p>
+        </div>
+        <div class="card c-coral reveal rv4">
+          <h4>
+            🚀 비즈니스 전환
+          </h4>
+          <p>
+            AI·빅데이터를 사업 모델로 전환
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- ═══ S6: 팀프로젝트 ═══ -->
+    <section id="s6" style="background:linear-gradient(170deg,#0d1117,#111827)">
+      <div class="stag reveal">
+        06 · TEAMWORK
+      </div>
+      <h2 class="sh2 reveal rv1">
+        경영학과는
+        <br/>
+        <span class="ac">
+          팀플이 많다
+        </span>
+        는데, 정말?
+      </h2>
+      <p class="ssub reveal rv2">
+        네, 맞아요! 실제 기업이 팀워크 기반이기 때문이에요.
+      </p>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            💬 의사소통 능력
+          </h4>
+          <p>
+            발표, 토론, 설득
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            🧩 문제해결 능력
+          </h4>
+          <p>
+            케이스 스터디 실전
+          </p>
+        </div>
+        <div class="card c-mint reveal rv3">
+          <h4>
+            👑 리더십
+          </h4>
+          <p>
+            조장 경험 = 취업 강점
+          </p>
+        </div>
+        <div class="card c-coral reveal rv4">
+          <h4>
+            🏆 경진대회
+          </h4>
+          <p>
+            기업경영사례 경진대회
+            <br/>
+            실전 경험
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- ═══ S7: 바이오융합 ═══ -->
+    <section id="s7" style="background:var(--bg)">
+      <div class="stag reveal">
+        07 · BIO + BIZ
+      </div>
+      <h2 class="sh2 reveal rv1">
+        바이오와 경영의
+        <br/>
+        <span class="ac">
+          강력한 조합
+        </span>
+      </h2>
+      <div class="venn reveal rv2">
+        <div class="vc" style="background:rgba(52,211,153,.1);border:1.5px solid rgba(52,211,153,.3);left:calc(50% - 95px);color:var(--mint)">
+          바이오
+          <br/>
+          헬스케어
+        </div>
+        <div class="vc" style="background:rgba(201,168,76,.1);border:1.5px solid rgba(201,168,76,.3);left:calc(50% - 35px);color:var(--gold-soft)">
+          경영
+          <br/>
+          전략
+        </div>
+        <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:6px;background:var(--glass);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:6px 14px;font-size:10px;font-weight:700;color:#fff">
+          헬스케어 비즈니스 리더
+        </div>
+      </div>
+      <p class="ssub reveal rv3">
+        R&D 수천억, 출시 10년+ → 전략적 포트폴리오 관리 필수
+      </p>
+      <p class="reveal rv3" style="font-size:13px;color:var(--gold-soft);font-weight:600">
+        졸업생 24.9%가 바이오헬스케어 진출
+      </p>
+    </section>
+    <!-- ═══ S8: 차대 강점 ═══ -->
+    <section id="s8" style="background:linear-gradient(170deg,#0d1117,#111827)">
+      <div class="stag reveal">
+        08 · ONLY ONE
+      </div>
+      <h2 class="sh2 reveal rv1">
+        전국에서
+        <span class="ac">
+          유일하게
+        </span>
+        <br/>
+        의과학대학 안의 경영학
+      </h2>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            🏥 차병원 네트워크
+          </h4>
+          <p>
+            졸업생 10.9%
+            <br/>
+            차병원그룹 취업
+          </p>
+        </div>
+        <div class="card c-mint reveal rv3">
+          <h4>
+            📚 특화 커리큘럼
+          </h4>
+          <p>
+            의료경영
+            <br/>
+            바이오산업론
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            🔬 연구 네트워크
+          </h4>
+          <p>
+            조세재정연구원
+            <br/>
+            금융감독원
+          </p>
+        </div>
+        <div class="card c-purple reveal rv4">
+          <h4>
+            📊 데이터 분석
+          </h4>
+          <p>
+            건강보험공단
+            <br/>
+            빅데이터 활용
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- ═══ S9: 졸업생진로 ═══ -->
+    <section id="s9" style="background:var(--bg)">
+      <div class="stag reveal">
+        09 · ALUMNI
+      </div>
+      <h2 class="sh2 reveal rv1">
+        선배들은
+        <br/>
+        <span class="ac">
+          어디에서
+        </span>
+        일하나요?
+      </h2>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv1">
+          <h4>
+            금융·증권
+          </h4>
+          <ul>
+            <li>
+              하나은행
+            </li>
+            <li>
+              SK증권
+            </li>
+            <li>
+              신한은행
+            </li>
+            <li>
+              KB국민은행
+            </li>
+          </ul>
+        </div>
+        <div class="card c-blue reveal rv2">
+          <h4>
+            대기업
+          </h4>
+          <ul>
+            <li>
+              현대자동차
+            </li>
+            <li>
+              삼성바이오로직스
+            </li>
+            <li>
+              롯데
+            </li>
+            <li>
+              CJ올리브영
+            </li>
+          </ul>
+        </div>
+        <div class="card c-mint reveal rv3">
+          <h4>
+            IT·플랫폼
+          </h4>
+          <ul>
+            <li>
+              쿠팡
+            </li>
+            <li>
+              스마일게이트
+            </li>
+            <li>
+              메가존클라우드
+            </li>
+          </ul>
+        </div>
+        <div class="card c-coral reveal rv4">
+          <h4>
+            병원·헬스케어
+          </h4>
+          <ul>
+            <li>
+              세브란스병원
+            </li>
+            <li>
+              차병원 계열
+            </li>
+            <li>
+              제약회사
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="chips reveal rv4">
+        <span class="chip" style="color:var(--mint);border-color:rgba(52,211,153,.3)">
+          바이오 24.9%
+        </span>
+        <span class="chip" style="color:var(--gold);border-color:rgba(201,168,76,.3)">
+          금융 19.5%
+        </span>
+        <span class="chip" style="color:var(--blue);border-color:rgba(74,125,255,.3)">
+          IT 19.0%
+        </span>
+      </div>
+    </section>
+    <!-- ═══ S10: 예술경영 ═══ -->
+    <section id="s10" style="background:linear-gradient(170deg,#0d1117,#111827)">
+      <div class="stag reveal">
+        10 · ART + BIZ
+      </div>
+      <h2 class="sh2 reveal rv1">
+        예술과 경영은
+        <br/>
+        <span class="ac">
+          완벽한 조합
+        </span>
+      </h2>
+      <p class="ssub reveal rv2">
+        공연기획자, 큐레이터, 문화 마케터로 진출!
+      </p>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            🎭 진로
+          </h4>
+          <p>
+            공연기획자
+            <br/>
+            미술관 큐레이터
+            <br/>
+            문화 마케터
+          </p>
+        </div>
+        <div class="card c-purple reveal rv3">
+          <h4>
+            🌟 취업 사례
+          </h4>
+          <p>
+            FNC엔터테인먼트
+            <br/>
+            서울환경영화제
+          </p>
+        </div>
+      </div>
+      <p class="reveal rv4" style="font-size:12px;color:var(--text-muted);margin-top:16px">
+        예술도 관객이 있어야 하고, 수익모델 설계가 필수!
+      </p>
+    </section>
+    <!-- ═══ S11: 디지털 vs AI ═══ -->
+    <section id="s11" style="background:var(--bg)">
+      <div class="stag reveal">
+        11 · DIGITAL vs AI
+      </div>
+      <h2 class="sh2 reveal rv1">
+        디지털 보건의료 vs
+        <br/>
+        <span class="ac">
+          AI 의료데이터
+        </span>
+      </h2>
+      <div class="card-grid">
+        <div class="card c-mint reveal rv2">
+          <h4>
+            🩺 디지털 보건의료
+          </h4>
+          <p>
+            서비스 기획 중심
+            <br/>
+            사람과 소통 중요
+            <br/>
+            → 병원 경영기획, 디지털 헬스 서비스 기획
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            🤖 AI 의료데이터
+          </h4>
+          <p>
+            데이터 분석 중심
+            <br/>
+            기술 역량 중요
+            <br/>
+            → 헬스케어 데이터 분석가, 보험 리스크 분석
+          </p>
+        </div>
+      </div>
+      <p class="reveal rv4" style="font-size:12px;color:var(--gold-soft);margin-top:16px">
+        둘 다 경영학과 시너지가 큽니다!
+      </p>
+    </section>
+    <!-- ═══ S12: 미디어융합 ═══ -->
+    <section id="s12" style="background:linear-gradient(170deg,#0d1117,#111827)">
+      <div class="stag reveal">
+        12 · MEDIA + BIZ
+      </div>
+      <h2 class="sh2 reveal rv1">
+        미디어와 경영학은
+        <br/>
+        <span class="ac">
+          완벽한 조합
+        </span>
+      </h2>
+      <p class="ssub reveal rv2">
+        요즘 모든 기업이 미디어 기업! 유튜브, 인스타 자체 채널 운영 시대.
+      </p>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            💼 진로
+          </h4>
+          <p>
+            IR · PR
+            <br/>
+            콘텐츠 비즈니스
+            <br/>
+            인플루언서 마케팅
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            🏢 취업처
+          </h4>
+          <p>
+            광고대행사
+            <br/>
+            방송사 전략팀
+            <br/>
+            MCN 기업
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- ═══ S13: 수포자 OK ═══ -->
+    <section id="s13" style="background:var(--bg)">
+      <div class="stag reveal">
+        13 · MATH-FREE
+      </div>
+      <h2 class="sh2 reveal rv1">
+        수학을 못해도
+        <br/>
+        <span class="ac">
+          괜찮을까요?
+        </span>
+      </h2>
+      <p class="ssub reveal rv2">
+        걱정 마세요! 기초부터 차근차근 가르칩니다.
+      </p>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            📐 회계원리
+          </h4>
+          <p>
+            자산 = 부채 + 자본
+            <br/>
+            이 공식부터 시작!
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            📊 경영통계
+          </h4>
+          <p>
+            평균, 분산부터
+            <br/>
+            고등학교 수준 OK
+          </p>
+        </div>
+        <div class="card c-mint reveal rv3">
+          <h4>
+            🎓 학습 지원
+          </h4>
+          <p>
+            교수학습지원센터
+            <br/>
+            튜터링 프로그램
+          </p>
+        </div>
+        <div class="card c-coral reveal rv4">
+          <h4>
+            🤝 선배 멘토링
+          </h4>
+          <p>
+            선배가 직접
+            <br/>
+            도와줍니다!
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- ═══ S14: 영상광고 ═══ -->
+    <section id="s14" style="background:linear-gradient(170deg,#0d1117,#0f172a)">
+      <div class="stag reveal">
+        14 · VIDEO + BIZ
+      </div>
+      <h2 class="sh2 reveal rv1">
+        영상 제작에
+        <br/>
+        <span class="ac">
+          경영 전략
+        </span>
+        을 더하면?
+      </h2>
+      <p class="ssub reveal rv2">
+        최강 콘텐츠 크리에이터가 됩니다!
+      </p>
+      <div class="card-grid">
+        <div class="card c-gold reveal rv2">
+          <h4>
+            🎬 마케팅 프레임
+          </h4>
+          <p>
+            전략적으로 영상 기획
+          </p>
+        </div>
+        <div class="card c-blue reveal rv3">
+          <h4>
+            📊 A/B 테스트
+          </h4>
+          <p>
+            데이터로 최적화
+          </p>
+        </div>
+        <div class="card c-mint reveal rv3">
+          <h4>
+            💰 ROI 측정
+          </h4>
+          <p>
+            투자 대비 수익 분석
+          </p>
+        </div>
+        <div class="card c-coral reveal rv4">
+          <h4>
+            🎯 목표 달성
+          </h4>
+          <p>
+            예쁜 영상이 아니라
+            <br/>
+            성과를 내는 콘텐츠
+          </p>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      차의과학대학교 미래융합대학 · 경영학전공
+      <br/>
+      경기도 포천시 해룡로 120
+      <br/>
+      <a href="https://biz.cha.ac.kr">
+        biz.cha.ac.kr
+      </a>
+      · 박대근 교수
+      <br/>
+      <br/>
+      © 2025 CHA University. All rights reserved.
+    </footer>
+    <!-- PIP Avatar -->
+    <div id="heygen-pip-container">
+      <iframe allow="camera; microphone; autoplay; clipboard-write" id="heygen-pip" src="https://interactiveavatarnextjsdemo.netlify.app">
+      </iframe>
+      <div class="pdb top">
+      </div>
+      <div class="pdb left">
+      </div>
+      <div class="pdb right">
+      </div>
+      <div class="pdb bottom">
+      </div>
+      <div class="phg">
+      </div>
+      <div class="pc">
+        <button class="pcb" onclick="toggleMinimizePIP()" title="최소화">
+          −
+        </button>
+        <button class="pcb cb" onclick="closePIP()" title="닫기">
+          ×
+        </button>
+      </div>
     </div>
-  </section>
-  <footer class="footer">
-    차의과학대학교 미래융합대학 · 경영학전공<br>
-    경기도 포천시 해룡로 120<br>
-    <a href="https://biz.cha.ac.kr">biz.cha.ac.kr</a> · 박대근 교수<br>
-    <br>
-    <span>© 2025 CHA University. All rights reserved.</span>
-  </footer>
-  <!-- PIP Avatar -->
-  <div id="heygen-pip-container">
-    <iframe id="heygen-pip" src="https://interactiveavatarnextjsdemo.netlify.app" allow="camera; microphone; autoplay; clipboard-write">
-    </iframe>
-    <div class="pdb top">
-    </div>
-    <div class="pdb left">
-    </div>
-    <div class="pdb right">
-    </div>
-    <div class="pdb bottom">
-    </div>
-    <div class="phg">
-    </div>
-    <div class="pc">
-      <button class="pcb" onclick="toggleMinimizePIP()" title="최소화/복원">&#8722;</button>
-      <button class="pcb cb" onclick="closePIP()" title="닫기">&times;</button>
-    </div>
-  </div>
-  <button id="heygen-pip-toggle" onclick="showPIP()">🎓</button>
-  <script>
-    // Scroll reveal
-    const reveals=document.querySelectorAll('.reveal');
-    new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'}).observe||reveals.forEach(el=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'}).observe(el));
-    // fix
-    const rObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
-    reveals.forEach(el=>rObs.observe(el));
-    // Count-up
-    document.querySelectorAll('[data-count]').forEach(el=>{
-    const o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const t=parseInt(el.dataset.count);let c=0;const s=Math.max(t/40,1);const tm=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(tm)}el.textContent=Math.floor(c)},25);o.unobserve(el)}})},{threshold:.5});
-    o.observe(el);
-    });
-    // Bar fill
-    document.querySelectorAll('.bf').forEach(bar=>{
-    const o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){bar.style.width=bar.dataset.width+'%';o.unobserve(bar)}})},{threshold:.3});
-    o.observe(bar);
-    });
-    // Nav dots
-    const secs=document.querySelectorAll('section');
-    const nd=document.getElementById('navDots');
-    secs.forEach(()=>{const d=document.createElement('button');d.className='nav-dot';nd.appendChild(d)});
-    const dots=document.querySelectorAll('.nav-dot');
-    dots.forEach((d,i)=>{d.onclick=()=>secs[i].scrollIntoView({behavior:'smooth'})});
-    new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=Array.from(secs).indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('active',j===i))}})},{threshold:.4}).observe||secs.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=Array.from(secs).indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('active',j===i))}})},{threshold:.4}).observe(s));
-    // fix
-    const dObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=Array.from(secs).indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('active',j===i))}})},{threshold:.4});
-    secs.forEach(s=>dObs.observe(s));
+    <button id="heygen-pip-toggle" onclick="showPIP()">
+      🎓
+    </button>
+    <script>
+      // Scroll reveal
+const rObs = new IntersectionObserver(es => {
+    es.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+    }
+);
+}
+, {
+    threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+);
+document.querySelectorAll('.reveal').forEach(el => rObs.observe(el));
+
+// Count-up
+document.querySelectorAll('[data-count]').forEach(el => {
+    new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting) return;
+        const t = parseInt(el.dataset.count);
+        let c = 0;
+        const s = Math.max(t / 40, 1);
+        const tm = setInterval(() => {
+            c += s;
+            if (c >= t) {
+                c = t;
+                clearInterval(tm);
+            }
+            el.innerHTML = Math.floor(c) + '<span style="font-size:20px">%</span>';
+        }
+        , 25);
+    }
+    , {
+        threshold: 0.5 }
+        ).observe(el);
+    }
+);
+
+// Bar fill
+document.querySelectorAll('.bar-fill').forEach(bar => {
+    new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) bar.style.width = bar.dataset.width + '%';
+    }
+    , {
+        threshold: 0.3 }
+        ).observe(bar);
+    }
+);
+
+// Nav dots
+const secs = document.querySelectorAll('section');
+const nd = document.getElementById('navDots');
+secs.forEach(() => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot';
+    nd.appendChild(d);
+}
+);
+const dots = document.querySelectorAll('.nav-dot');
+dots.forEach((d, i) => {
+    d.onclick = () => secs[i].scrollIntoView({
+        behavior: 'smooth' }
+    );
+}
+);
+new IntersectionObserver(es => {
+    es.forEach(e => {
+        if (e.isIntersecting) {
+            const i = Array.from(secs).indexOf(e.target);
+            dots.forEach((d, j) => d.classList.toggle('active', j === i));
+        }
+    }
+);
+}
+, {
+    threshold: 0.4 }
+    ).observe(secs[0]);
+    secs.forEach(s => new IntersectionObserver(es => {
+        es.forEach(e => {
+            if (e.isIntersecting) {
+                const i = Array.from(secs).indexOf(e.target);
+                dots.forEach((d, j) => d.classList.toggle('active', j === i));
+            }
+        }
+    );
+}
+, {
+    threshold: 0.4 }
+    ).observe(s));
+
     // PIP Drag
-    const pc=document.getElementById('heygen-pip-container');
-    const dbs=document.querySelectorAll('.pdb');
-    let dragging=false,sx,sy,sl,st;
-    dbs.forEach(b=>{b.addEventListener('mousedown',sd);b.addEventListener('touchstart',sd,{passive:false})});
-    function sd(e){dragging=true;pc.classList.add('dragging');const t=e.touches?e.touches[0]:e;sx=t.clientX;sy=t.clientY;const r=pc.getBoundingClientRect();sl=r.left;st=r.top;e.preventDefault()}
-    function dr(e){if(!dragging)return;const t=e.touches?e.touches[0]:e;let nl=sl+(t.clientX-sx),nt=st+(t.clientY-sy);nl=Math.max(0,Math.min(nl,innerWidth-pc.offsetWidth));nt=Math.max(0,Math.min(nt,innerHeight-pc.offsetHeight));pc.style.left=nl+'px';pc.style.top=nt+'px';pc.style.right='auto';pc.style.bottom='auto';e.preventDefault()}
-    function sdr(){if(!dragging)return;dragging=false;pc.classList.remove('dragging')}
-    document.addEventListener('mousemove',dr);document.addEventListener('mouseup',sdr);
-    document.addEventListener('touchmove',dr,{passive:false});document.addEventListener('touchend',sdr);
-    // PIP Controls
-    let isMin=false;
-    function toggleMinimizePIP(){const r=pc.getBoundingClientRect();if(!isMin){pc.style.left=(r.right-120)+'px';pc.style.top=(r.bottom-68)+'px';pc.style.right='auto';pc.style.bottom='auto';isMin=true;pc.classList.add('minimized')}else{isMin=false;pc.classList.remove('minimized')}}
-    function closePIP(){const f=document.getElementById('heygen-pip');if(f.contentWindow)f.contentWindow.postMessage({type:'END_SESSION'},'*');pc.classList.add('hidden')}
-    function showPIP(){pc.classList.remove('hidden');if(isMin){isMin=false;pc.classList.remove('minimized')}}
-    // PIP message — tab → section 매핑 후 스크롤
-    const tabToSection = {
-      tab1: 's4',  // 연구분야 → RESEARCH
-      tab2: 's6',  // 통합교육 → CURRICULUM
-      tab3: 's2',  // 취업전망 → NUMBERS
-      tab4: 's6',  // 세부전공 → CURRICULUM
-      tab5: 's3',  // 미래가치 → IDENTITY
-      tab6: 's6',  // 팀프로젝트 → CURRICULUM
-      tab7: 's3',  // 바이오융합 → IDENTITY
-      tab8: 's3',  // 차대만의강점 → IDENTITY
-      tab9: 's5',  // 졸업생진로 → CAREERS
-      tab10: 's5', // 예술경영 → CAREERS
-      tab11: 's6', // 디지털vsAI → CURRICULUM
-      tab12: 's6', // 미디어융합 → CURRICULUM
-      tab13: 's6', // 수포자OK → CURRICULUM
-      tab14: 's5', // 영상광고 → CAREERS
-    };
+    const pc = document.getElementById('heygen-pip-container');
+    let dragging = false, sx, sy, sl, st;
+    document.querySelectorAll('.pdb').forEach(b => {
+        b.addEventListener('mousedown', sd);
+        b.addEventListener('touchstart', sd, {
+            passive: false }
+        );
+    }
+);
+function sd(e) {
+    dragging = true;
+    pc.classList.add('dragging');
+    const t = e.touches ? e.touches[0] : e;
+    sx = t.clientX;
+    sy = t.clientY;
+    const r = pc.getBoundingClientRect();
+    sl = r.left;
+    st = r.top;
+    e.preventDefault();
+}
+function dr(e) {
+    if (!dragging) return;
+    const t = e.touches ? e.touches[0] : e;
+    let nl = sl + (t.clientX - sx), nt = st + (t.clientY - sy);
+    nl = Math.max(0, Math.min(nl, innerWidth - pc.offsetWidth));
+    nt = Math.max(0, Math.min(nt, innerHeight - pc.offsetHeight));
+    pc.style.left = nl + 'px';
+    pc.style.top = nt + 'px';
+    pc.style.right = 'auto';
+    pc.style.bottom = 'auto';
+    e.preventDefault();
+}
+function sdr() {
+    if (!dragging) return;
+    dragging = false;
+    pc.classList.remove('dragging');
+}
+document.addEventListener('mousemove', dr);
+document.addEventListener('mouseup', sdr);
+document.addEventListener('touchmove', dr, {
+    passive: false }
+);
+document.addEventListener('touchend', sdr);
+
+// PIP controls
+let isMin = false;
+function toggleMinimizePIP() {
+    const r = pc.getBoundingClientRect();
+    if (!isMin) {
+        pc.style.left = (r.right - 120) + 'px';
+        pc.style.top = (r.bottom - 68) + 'px';
+        pc.style.right = 'auto';
+        pc.style.bottom = 'auto';
+        isMin = true;
+        pc.classList.add('minimized');
+    }
+    else {
+        isMin = false;
+        pc.classList.remove('minimized');
+    }
+}
+function closePIP() {
+    const f = document.getElementById('heygen-pip');
+    if (f.contentWindow) f.contentWindow.postMessage({
+        type: 'END_SESSION' }
+        , '*');
+        pc.classList.add('hidden');
+    }
+    function showPIP() {
+        pc.classList.remove('hidden');
+        if (isMin) {
+            isMin = false;
+            pc.classList.remove('minimized');
+        }
+    }
+
+    // ═══ NAVIGATE_TAB → 섹션 스크롤 (1:1 매칭) ═══
     window.addEventListener('message', e => {
-      const a = ['https://interactiveavatarnextjsdemo.netlify.app','http://localhost','http://127.0.0.1'];
-      if (!a.some(o => e.origin.startsWith(o))) return;
-      const { type, tabId } = e.data || {};
-      if (type === 'NAVIGATE_TAB' && tabId) {
-        const sectionId = tabToSection[tabId] || 's1';
-        console.log('📑 NAVIGATE_TAB:', tabId, '→ scroll to', sectionId);
-        const section = document.getElementById(sectionId);
-        if (section) section.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  </script>
-</body>
+        console.log('📨 Parent received:', e.origin, e.data);
+        const allowed = [
+        'https://interactiveavatarnextjsdemo.netlify.app',
+        'https://sungbongju.github.io',
+        'https://sdkparkforbi.github.io',
+        'http://localhost', 'http://127.0.0.1'
+        ];
+        if (!allowed.some(o => e.origin.startsWith(o))) return;
+        const {
+            type, tabId }
+            = e.data || {
+            }
+            ;
+            if (type === 'NAVIGATE_TAB' && tabId) {
+                // tab1 → s1, tab2 → s2, ... tab14 → s14
+                const num = String(tabId).replace('tab', '');
+                const sectionId = 's' + num;
+                console.log('✅ NAVIGATE_TAB:', tabId, '→', sectionId);
+                const section = document.getElementById(sectionId);
+                if (section) section.scrollIntoView({
+                    behavior: 'smooth' }
+                );
+            }
+        }
+    );
+    </script>
+  </body>
 </html>
