@@ -1,1233 +1,481 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <link rel="icon" href="data:,">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>경영학전공 1문 1답</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>경영학전공 — 차의과학대학교</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0a0f;
+  --bg-card:#111118;
+  --bg-elevated:#181822;
+  --gold:#c9a84c;
+  --gold-soft:#e8d48b;
+  --blue:#4a7dff;
+  --blue-soft:#7fa3ff;
+  --mint:#34d399;
+  --coral:#f87171;
+  --text:#e4e4e7;
+  --text-dim:#71717a;
+  --text-muted:#3f3f46;
+  --glass:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px;scroll-snap-type:y mandatory;overflow-y:scroll}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-        body {
-            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
+section{min-height:100vh;min-height:100svh;padding:80px 28px 50px;display:flex;flex-direction:column;justify-content:center;position:relative;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden}
 
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rv1{transition-delay:.12s}.rv2{transition-delay:.24s}.rv3{transition-delay:.36s}.rv4{transition-delay:.48s}
 
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
+.stag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:22px;background:rgba(201,168,76,.08);color:var(--gold);border:1px solid rgba(201,168,76,.15)}
 
-        header p {
-            font-size: 1.2em;
-            opacity: 0.95;
-        }
+/* Nav dots */
+.nav-dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100}
+.nav-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);background:transparent;cursor:pointer;transition:all .3s;padding:0}
+.nav-dot.active{background:var(--gold);border-color:var(--gold);transform:scale(1.3)}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+/* ══ S1 HERO ══ */
+.hero{background:var(--bg);text-align:center;padding:100px 28px 70px}
+.hero::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 40%,rgba(201,168,76,.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 60%,rgba(74,125,255,.04) 0%,transparent 50%);animation:hGlow 16s ease-in-out infinite alternate}
+@keyframes hGlow{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(-3%,2%) rotate(2deg)}}
+.hero-ey{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:30px;position:relative}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,8vw,48px);font-weight:400;line-height:1.4;position:relative;margin-bottom:22px;color:#fff}
+.hero h1 .ac{color:var(--gold)}
+.hero-sub{font-size:15px;line-height:1.8;color:var(--text-dim);max-width:320px;margin:0 auto 40px;position:relative}
+.hero-sub .hl{color:var(--gold-soft);font-weight:500}
+.scroll-hint{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px;position:relative}
+.scroll-arrow{width:1px;height:40px;background:linear-gradient(to bottom,rgba(201,168,76,.5),transparent);animation:sPulse 2s ease-in-out infinite}
+@keyframes sPulse{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.3)}}
 
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 0;
-            border-bottom: 3px solid #ddd;
-            overflow-x: auto;
-            padding-bottom: 0;
-        }
+/* ══ S2 NUMBERS ══ */
+.numbers{background:var(--bg);padding:80px 28px 60px}
+.numbers h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,6vw,36px);color:#fff;margin-bottom:8px;line-height:1.3}
+.numbers .sub{font-size:13px;color:var(--text-dim);margin-bottom:32px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.sc{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px 18px;text-align:center;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc:nth-child(1)::before{background:var(--gold)}
+.sc:nth-child(2)::before{background:var(--blue)}
+.sc:nth-child(3)::before{background:var(--mint)}
+.sc:nth-child(4)::before{background:var(--coral)}
+.sn{font-family:'DM Serif Display',serif;font-size:36px;font-weight:400;margin-bottom:4px}
+.sc:nth-child(1) .sn{color:var(--gold)}
+.sc:nth-child(2) .sn{color:var(--blue)}
+.sc:nth-child(3) .sn{color:var(--mint)}
+.sc:nth-child(4) .sn{color:var(--coral)}
+.sl{font-size:12px;color:var(--text-dim)}
+.ss{font-size:10px;color:var(--text-muted);margin-top:2px}
+.bw{margin-bottom:10px}
+.bl{display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-bottom:4px}
+.bt{height:6px;background:var(--bg-card);border-radius:6px;overflow:hidden}
+.bf{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.22,.61,.36,1);width:0}
+.bf.g{background:linear-gradient(90deg,var(--gold),var(--gold-soft))}
+.bf.b{background:linear-gradient(90deg,var(--blue),var(--blue-soft))}
+.bf.m{background:linear-gradient(90deg,#059669,var(--mint))}
 
-        .tab {
-            padding: 15px 25px;
-            background: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            border-radius: 8px 8px 0 0;
-            transition: all 0.3s;
-            white-space: nowrap;
-            border: 2px solid transparent;
-            border-bottom: none;
-        }
+/* ══ S3 IDENTITY ══ */
+.identity{background:linear-gradient(170deg,#0d1117,#111827);padding:80px 28px 60px}
+.identity h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,6vw,36px);color:#fff;line-height:1.4;margin-bottom:24px}
+.identity h2 .ac{color:var(--gold)}
+.venn{display:flex;justify-content:center;align-items:center;margin:24px 0;position:relative;height:170px}
+.vc{width:135px;height:135px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;text-align:center;line-height:1.4;position:absolute}
+.vc.med{background:rgba(52,211,153,.1);border:1.5px solid rgba(52,211,153,.3);left:calc(50% - 100px);color:var(--mint)}
+.vc.biz{background:rgba(201,168,76,.1);border:1.5px solid rgba(201,168,76,.3);left:calc(50% - 35px);color:var(--gold-soft)}
+.vm{position:absolute;left:50%;transform:translateX(-50%);background:var(--glass);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:7px 14px;font-size:10px;font-weight:700;color:#fff;text-align:center;bottom:8px;letter-spacing:.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}
+.chip{padding:6px 14px;border-radius:24px;font-size:11px;font-weight:500;background:var(--glass);border:1px solid var(--border);color:rgba(255,255,255,.5);transition:all .3s}
+.chip:hover{border-color:var(--gold);color:var(--gold-soft)}
 
-        .tab:hover {
-            background: #f0f0f0;
-            transform: translateY(-2px);
-        }
+/* ══ S4 RESEARCH ══ */
+.research{background:var(--bg);padding:80px 28px 60px}
+.research h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,6vw,36px);color:#fff;margin-bottom:8px}
+.research .sub{font-size:13px;color:var(--text-dim);margin-bottom:28px}
+.rcards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:12px;margin:0 -28px;padding-left:28px;padding-right:28px}
+.rcards::-webkit-scrollbar{display:none}
+.rc{min-width:260px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;scroll-snap-align:start;flex-shrink:0;position:relative;overflow:hidden}
+.rc::after{content:'';position:absolute;top:0;left:0;width:100%;height:2px}
+.rc:nth-child(1)::after{background:var(--gold)}
+.rc:nth-child(2)::after{background:var(--mint)}
+.rc:nth-child(3)::after{background:var(--blue)}
+.rc .ri{font-size:24px;margin-bottom:14px}
+.rc h3{font-size:14px;font-weight:700;color:#fff;margin-bottom:8px}
+.rc p{font-size:12px;color:var(--text-dim);line-height:1.7}
+.rc .jr{font-size:10px;color:var(--text-muted);margin-top:10px;font-style:italic}
+.swh{text-align:center;font-size:11px;color:var(--text-muted);margin-top:8px}
 
-        .tab.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
+/* ══ S5 CAREERS ══ */
+.careers{background:linear-gradient(170deg,#0d1117,#0f172a);padding:80px 28px 60px}
+.careers h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,6vw,36px);color:#fff;margin-bottom:8px}
+.careers .sub{font-size:13px;color:var(--text-dim);margin-bottom:28px}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cc{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:20px 16px}
+.cc h4{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.cc:nth-child(1) h4{color:var(--gold)}
+.cc:nth-child(2) h4{color:var(--blue)}
+.cc:nth-child(3) h4{color:var(--mint)}
+.cc:nth-child(4) h4{color:var(--coral)}
+.cc ul{list-style:none}
+.cc li{font-size:13px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid var(--border)}
+.cc li:last-child{border-bottom:none}
+.sr{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.sc2{padding:6px 14px;border-radius:24px;font-size:11px;font-weight:600;border:1px solid}
+.sc2.bio{color:var(--mint);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
+.sc2.fin{color:var(--gold);border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.06)}
+.sc2.it{color:var(--blue);border-color:rgba(74,125,255,.3);background:rgba(74,125,255,.06)}
+.sc2.hosp{color:var(--coral);border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.06)}
 
-        .tab-content {
-            display: none;
-            background: white;
-            padding: 40px;
-            border-radius: 0 15px 15px 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 40px;
-        }
+/* ══ S6 CURRICULUM ══ */
+.curriculum{background:var(--bg);padding:80px 28px 60px}
+.curriculum h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,6vw,36px);color:#fff;margin-bottom:8px}
+.curriculum .sub{font-size:13px;color:var(--text-dim);margin-bottom:32px}
+.tl{position:relative;padding-left:30px}
+.tl::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--blue),var(--mint));border-radius:2px}
+.ti{position:relative;margin-bottom:28px}
+.ti::before{content:'';position:absolute;left:-26px;top:6px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--gold);background:var(--bg)}
+.ti:nth-child(2)::before{border-color:var(--blue)}
+.ti:nth-child(3)::before{border-color:var(--mint)}
+.ty{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.ti:nth-child(1) .ty{color:var(--gold)}
+.ti:nth-child(2) .ty{color:var(--blue)}
+.ti:nth-child(3) .ty{color:var(--mint)}
+.tt{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+.tg{display:flex;flex-wrap:wrap;gap:5px}
+.tg span{font-size:10px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.04);color:var(--text-dim);border:1px solid var(--border)}
 
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
+/* ══ S7 CTA ══ */
+.cta-s{background:var(--bg);text-align:center;padding:80px 28px 60px}
+.cta-s h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,6vw,36px);color:#fff;margin-bottom:12px;line-height:1.4}
+.cta-s .sub{font-size:13px;color:var(--text-dim);margin-bottom:32px}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),#b8942e);color:#0a0a0f;border:none;border-radius:50px;padding:16px 28px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .2s,box-shadow .3s}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(201,168,76,.3)}
+.cta-btn:active{transform:scale(.97)}
+.pd{width:8px;height:8px;background:#0a0a0f;border-radius:50%;animation:cp 2s ease-in-out infinite}
+@keyframes cp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.cn{font-size:11px;color:var(--text-muted);margin-top:16px;line-height:1.7}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.footer{padding:30px 28px;font-size:11px;color:var(--text-muted);text-align:center;line-height:1.8;border-top:1px solid var(--border)}
+.footer a{color:var(--gold);text-decoration:none}
 
-        h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 1.5em;
-        }
+/* ══ PIP ══ */
+#heygen-pip-container{position:fixed;bottom:20px;right:20px;z-index:9999;border-radius:16px;overflow:visible;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:width .3s,height .3s,opacity .3s}
+#heygen-pip-container.hidden{opacity:0;pointer-events:none;transform:scale(.8);transition:opacity .3s,transform .3s}
+#heygen-pip-container.dragging{transition:none;user-select:none}
+#heygen-pip{width:380px;height:214px;border:none;border-radius:16px;background:var(--bg-card);display:block;transition:width .3s,height .3s}
+.pdb{position:absolute;pointer-events:auto;cursor:grab;z-index:5}
+.pdb:active{cursor:grabbing}
+.pdb.top{top:0;left:0;right:0;height:25px;border-radius:16px 16px 0 0}
+.pdb.left{top:25px;left:0;bottom:0;width:8px}
+.pdb.right{top:25px;right:0;bottom:0;width:8px}
+.pdb.bottom{bottom:0;left:0;right:0;height:8px;border-radius:0 0 16px 16px}
+.phg{position:absolute;top:0;left:0;right:0;height:50px;border-radius:16px 16px 0 0;background:linear-gradient(to bottom,rgba(0,0,0,.5),transparent);opacity:0;transition:opacity .2s;pointer-events:none;z-index:6}
+#heygen-pip-container:hover .phg{opacity:1}
+.pc{position:absolute;top:8px;right:8px;display:flex;gap:6px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}
+#heygen-pip-container:hover .pc{opacity:1;pointer-events:auto}
+.pcb{width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;line-height:1;font-family:inherit}
+.pcb:hover{background:rgba(255,255,255,.3)}
+.pcb.cb:hover{background:rgba(255,80,60,.7)}
+#heygen-pip-container.minimized{width:120px!important;height:68px!important;border-radius:10px}
+#heygen-pip-container.minimized #heygen-pip{width:120px!important;height:68px!important;border-radius:10px}
+#heygen-pip-container.minimized .pdb.top{height:15px;border-radius:10px 10px 0 0}
+#heygen-pip-container.minimized .phg{border-radius:10px 10px 0 0}
+#heygen-pip-toggle{position:fixed;bottom:20px;right:20px;width:64px;height:64px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(135deg,var(--gold),#b8942e);border:2.5px solid rgba(201,168,76,.4);color:#0a0a0f;cursor:pointer;z-index:10000;box-shadow:0 4px 24px rgba(201,168,76,.3);transition:all .3s}
+#heygen-pip-toggle:hover{transform:scale(1.08);box-shadow:0 6px 30px rgba(201,168,76,.5);border-color:var(--gold)}
+#heygen-pip-toggle:active{transform:scale(.95)}
+#heygen-pip-container.hidden~#heygen-pip-toggle{display:flex!important}
 
-        h3 {
-            color: #333;
-            margin: 20px 0 10px;
-            font-size: 1.2em;
-        }
-
-        .info-box, .success-box, .warning-box, .error-box {
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px 0;
-            font-size: 15px;
-        }
-
-        .info-box {
-            background: #e8f4f8;
-            border-left: 4px solid #3498db;
-        }
-
-        .success-box {
-            background: #e8f8e8;
-            border-left: 4px solid #2ecc71;
-        }
-
-        .warning-box {
-            background: #fef9e7;
-            border-left: 4px solid #f39c12;
-        }
-
-        .error-box {
-            background: #fde8e8;
-            border-left: 4px solid #e74c3c;
-        }
-
-        .columns {
-            display: grid;
-            gap: 20px;
-            margin: 15px 0;
-        }
-
-        .columns-2 { grid-template-columns: 1fr 1fr; }
-        .columns-3 { grid-template-columns: 1fr 1fr 1fr; }
-        .columns-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-
-        .metric {
-            text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .metric-value {
-            font-size: 2.5em;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .metric-label {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .metric-delta {
-            font-size: 12px;
-            color: #2ecc71;
-            margin-top: 3px;
-        }
-
-        .progress {
-            background: #e0e0e0;
-            border-radius: 15px;
-            height: 30px;
-            margin: 15px 0;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar {
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            transition: width 0.6s ease;
-        }
-
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 30px 20px;
-            margin-top: 60px;
-        }
-
-        footer p {
-            margin: 5px 0;
-        }
-
-        /* ── PIP Avatar Widget (미디어커뮤니케이션 스타일) ── */
-        #heygen-pip-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            border-radius: 16px;
-            overflow: visible;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-        }
-        #heygen-pip-container.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.8);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        #heygen-pip-container.dragging {
-            transition: none;
-            user-select: none;
-        }
-        #heygen-pip {
-            width: 380px;
-            height: 214px;
-            border: none;
-            border-radius: 16px;
-            background: #1a1a2e;
-            display: block;
-            transition: width 0.3s ease, height 0.3s ease;
-        }
-
-        /* Drag borders */
-        .pip-drag-border {
-            position: absolute;
-            pointer-events: auto;
-            cursor: grab;
-            z-index: 5;
-        }
-        .pip-drag-border:active { cursor: grabbing; }
-        .pip-drag-border.top {
-            top: 0; left: 0; right: 0;
-            height: 25px;
-            border-radius: 16px 16px 0 0;
-        }
-        .pip-drag-border.left {
-            top: 25px; left: 0; bottom: 0;
-            width: 8px;
-        }
-        .pip-drag-border.right {
-            top: 25px; right: 0; bottom: 0;
-            width: 8px;
-        }
-        .pip-drag-border.bottom {
-            bottom: 0; left: 0; right: 0;
-            height: 8px;
-            border-radius: 0 0 16px 16px;
-        }
-
-        /* Hover gradient overlay */
-        .pip-hover-gradient {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 50px;
-            border-radius: 16px 16px 0 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
-            opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
-            z-index: 6;
-        }
-        #heygen-pip-container:hover .pip-hover-gradient { opacity: 1; }
-
-        /* PIP controls (minimize / close) */
-        .pip-controls {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            display: flex;
-            gap: 6px;
-            opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
-            z-index: 10;
-        }
-        #heygen-pip-container:hover .pip-controls {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .pip-ctrl-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(4px);
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            line-height: 1;
-            font-family: inherit;
-        }
-        .pip-ctrl-btn:hover { background: rgba(255,255,255,0.35); }
-        .pip-ctrl-btn.close-btn:hover { background: rgba(255,80,60,0.7); }
-
-        /* Minimized state */
-        #heygen-pip-container.minimized {
-            width: 120px !important;
-            height: 68px !important;
-            border-radius: 10px;
-        }
-        #heygen-pip-container.minimized #heygen-pip {
-            width: 120px !important;
-            height: 68px !important;
-            border-radius: 10px;
-        }
-        #heygen-pip-container.minimized .pip-drag-border.top { height: 15px; border-radius: 10px 10px 0 0; }
-        #heygen-pip-container.minimized .pip-hover-gradient { border-radius: 10px 10px 0 0; }
-
-        /* Toggle button (appears when PIP is hidden) */
-        #heygen-pip-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: 2.5px solid rgba(102, 126, 234, 0.5);
-            color: #fff;
-            cursor: pointer;
-            z-index: 10000;
-            box-shadow: 0 4px 24px rgba(102, 126, 234, 0.35);
-            transition: all 0.3s;
-        }
-        #heygen-pip-toggle:hover {
-            transform: scale(1.08);
-            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.5);
-            border-color: #667eea;
-        }
-        #heygen-pip-toggle:active { transform: scale(0.95); }
-        #heygen-pip-container.hidden ~ #heygen-pip-toggle {
-            display: flex !important;
-        }
-
-        @media (max-width: 768px) {
-            header h1 { font-size: 1.8em; }
-            .tab { padding: 10px 15px; font-size: 14px; }
-            .tab-content { padding: 20px; }
-            .columns, .columns-2, .columns-3, .columns-4 { 
-                grid-template-columns: 1fr; 
-            }
-            #heygen-pip { width: 280px; height: 158px; }
-            #heygen-pip-container.minimized #heygen-pip { width: 100px !important; height: 56px !important; }
-            #heygen-pip-container.minimized { width: 100px !important; height: 56px !important; }
-        }
-
-    </style>
+@media(max-width:440px){
+  #heygen-pip{width:280px;height:158px}
+  #heygen-pip-container.minimized #heygen-pip{width:100px!important;height:56px!important}
+  #heygen-pip-container.minimized{width:100px!important;height:56px!important}
+  .sg,.cg{gap:10px}
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>🎓 경영학전공 1문 1답</h1>
-        <p>미래융합대학 헬스케어융합학부 | 박대근 교수</p>
-    </header>
 
-    <div class="container">
-        <div class="tabs">
-            <button class="tab active" onclick="openTab('tab1')">연구분야</button>
-            <button class="tab" onclick="openTab('tab2')">통합교육</button>
-            <button class="tab" onclick="openTab('tab3')">취업전망</button>
-            <button class="tab" onclick="openTab('tab4')">세부전공</button>
-            <button class="tab" onclick="openTab('tab5')">미래가치</button>
-            <button class="tab" onclick="openTab('tab6')">팀프로젝트</button>
-            <button class="tab" onclick="openTab('tab7')">바이오융합</button>
-            <button class="tab" onclick="openTab('tab8')">차대만의강점</button>
-            <button class="tab" onclick="openTab('tab9')">졸업생진로</button>
-            <button class="tab" onclick="openTab('tab10')">예술경영</button>
-            <button class="tab" onclick="openTab('tab11')">디지털vs AI</button>
-            <button class="tab" onclick="openTab('tab12')">미디어융합</button>
-            <button class="tab" onclick="openTab('tab13')">수포자OK</button>
-            <button class="tab" onclick="openTab('tab14')">영상광고</button>
-        </div>
+<div class="nav-dots" id="navDots"></div>
 
-        <!-- 탭 1: 연구분야 -->
-        <div id="tab1" class="tab-content active">
-            <h2>🔬 경영학전공에서는 실제로 어떤 연구들을 다루나요?</h2>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>📚 연구 분야</h3>
-                    <div class="info-box">
-                        <strong>경영학 핵심 이론</strong><br>
-                        - 경영기획: 기업전략, 조직관리 등<br>
-                        - 마케팅: 소비자 행동, 브랜드 전략, 서비스 마케팅 등<br>
-                        - 회계재무: 기업가치 평가, 회계투명성, 투자의사결정 등<br><br>
-                        
-                        <strong>최신 트렌드</strong><br>
-                        - 경영기획: ESG 평가지표 개발, 기업지배구조 개선<br>
-                        - 마케팅: AI 서비스 로봇 수용도, MZ세대 SNS 전략<br>
-                        - 회계재무: 제약·바이오 R&D 회계처리, 공시정보 신뢰성
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>🏆 교수진 연구 성과</h3>
-                    <div class="success-box">
-                        <strong>국내외 저널 게재</strong><br>
-                        - 국제: Psychology & Marketing | Applied Economics Letters | Journal of Forecasting | International Journal of Hospitality Management<br>
-                        - 국내: 회계학연구 | 경영학연구 | 한국언론학보 | 한국방송학보 | 고객만족경영연구 | 상품학연구<br><br>
-                        
-                        <strong>주요 연구 주제</strong><br>
-                        - 경영기획: ESG 뉴스의 기업가치 영향 분석 등<br>
-                        - 마케팅: K-콘텐츠의 글로벌 시장 전략, 디지털 리터러시와 소비자 참여 등<br>
-                        - 회계재무: 주주권 행사와 이익조정, 신용평가와 재무보고 적시성 등<br>
-                        - 융합분야: AI융합연구방법론, AI를 활용한 시계열 예측, AI 지능형 봇 개발 등
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- S1: HERO -->
+<section class="hero" id="s1" data-dot-dark>
+  <p class="hero-ey reveal">CHA UNIVERSITY</p>
+  <h1 class="reveal rv1">
+    병원도, 금융도,<br>
+    바이오 스타트업도<br>
+    <span class="ac">경영을 아는 사람</span>을<br>
+    찾고 있습니다.
+  </h1>
+  <p class="hero-sub reveal rv2">
+    <span class="hl">바이오헬스케어를 이해하는 경영인</span>은<br>어디서 키울까요?
+  </p>
+  <div class="scroll-hint reveal rv3">
+    <span>SCROLL</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
 
-        <!-- 탭 2: 통합교육 -->
-        <div id="tab2" class="tab-content">
-            <h2>🤝 왜 마케팅이나 인사관리 같은 수업도 들어야 하나요?</h2>
-            
-            <div class="warning-box" style="margin-bottom: 30px;">
-                <strong>💡 기업 경영 = 퍼즐 맞추기</strong><br>
-                한 조각만으로는 전체 그림을 볼 수 없어요!
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>실무에서는?</h3>
-                    <div class="info-box">
-                        <strong>재무 전문가도</strong><br>
-                        - 마케팅 ROI를 분석해야 하고<br>
-                        - 인건비 구조를 이해해야 하고<br>
-                        - 법률 리스크를 파악해야 합니다<br><br>
-                        
-                        <strong>마케터도</strong><br>
-                        - 예산을 관리해야 하고<br>
-                        - 재무제표를 읽어야 하고<br>
-                        - 조직 역학을 이해해야 합니다
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>통합 교육의 가치</h3>
-                    <div class="success-box">
-                        <strong>왜 다양한 과목을 배우나?</strong><br>
-                        - 실제 기업은 부서 간 협업이 필수<br>
-                        - 재무팀과 마케팅팀이 함께 일함<br>
-                        - 전체를 보는 시야이 경쟁력<br><br>
-                        
-                        <strong>결과</strong><br>
-                        - CEO급 시야 확보<br>
-                        - 어떤 부서든 적응 가능<br>
-                        - 융합적 사고력 배양
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- S2: NUMBERS -->
+<section class="numbers" id="s2" data-dot-dark>
+  <div class="stag reveal">BY THE NUMBERS</div>
+  <h2 class="reveal">숫자가 증명합니다</h2>
+  <p class="sub reveal rv1">경영학전공 졸업생 실적</p>
 
-        <!-- 탭 3: 취업전망 -->
-        <div id="tab3" class="tab-content">
-            <h2>💼 경영학과 졸업하면 취업이 잘 되나요?</h2>
-            
-            <div class="columns columns-4">
-                <div class="metric">
-                    <div class="metric-value">88.7%</div>
-                    <div class="metric-label">취업률</div>
-                    <div class="metric-delta">전국 평균 대비 우수</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">48.9%</div>
-                    <div class="metric-label">경영기획</div>
-                    <div class="metric-delta">최다 직무</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">20.8%</div>
-                    <div class="metric-label">회계세무금융</div>
-                    <div class="metric-delta">안정적 직군</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">14.0%</div>
-                    <div class="metric-label">마케팅</div>
-                    <div class="metric-delta">성장 직군</div>
-                </div>
-            </div>
-            
-            <div class="columns columns-2" style="margin-top: 30px;">
-                <div>
-                    <h3>📊 직무별 분포</h3>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 49%;">경영기획 48.9%</div>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 21%;">회계세무금융 20.8%</div>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 14%;">마케팅 14.0%</div>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>🏢 기업 규모별</h3>
-                    <div class="info-box">
-                        - <strong>중소기업</strong>: 30.8%<br>
-                        - <strong>외감기업</strong>: 19.5%<br>
-                        - <strong>코스피</strong>: 8.1%<br>
-                        - <strong>코스닥</strong>: 6.3%
-                    </div>
-                </div>
-            </div>
-            
-            <div class="success-box" style="margin-top: 30px;">
-                <strong>✅ 경영학 단일전공만으로도 충분!</strong><br>
-                - 다양한 산업 진출 가능<br>
-                - 복수전공은 차별화 전략 (선택사항)<br>
-                - 스포츠의학 복수전공 시 78조원 스포츠산업 진출 유리
-            </div>
-        </div>
-
-        <!-- 탭 4: 세부전공 -->
-        <div id="tab4" class="tab-content">
-            <h2>📚 경영학 안에도 세부 전공이 있나요?</h2>
-            
-            <h3>경영학 세부전공 분야</h3>
-            
-            <div class="columns columns-3">
-                <div class="info-box">
-                    <strong>🎯 경영기획</strong><br>
-                    - 기업 전략 수립<br>
-                    - 조직 설계<br>
-                    - ESG 경영<br>
-                    - 진로: 전략기획, 경영컨설팅
-                </div>
-                
-                <div class="info-box">
-                    <strong>📈 마케팅</strong><br>
-                    - 소비자 행동 분석<br>
-                    - 브랜드 관리<br>
-                    - 디지털 마케팅<br>
-                    - 진로: 마케팅매니저, 브랜드매니저
-                </div>
-                
-                <div class="info-box">
-                    <strong>💰 회계재무</strong><br>
-                    - 재무제표 분석<br>
-                    - 투자 의사결정<br>
-                    - 리스크 관리<br>
-                    - 진로: 회계사, 애널리스트, 펀드매니저
-                </div>
-            </div>
-
-            <h3>🏥 차의과학대 특화 분야</h3>
-            <div class="columns columns-2">
-                <div class="success-box">
-                    <strong>헬스케어 비즈니스</strong><br>
-                    - 의료서비스 경영<br>
-                    - 의료관광<br>
-                    - 바이오산업 분석
-                </div>
-                
-                <div class="success-box">
-                    <strong>비즈니스 애널리틱스</strong><br>
-                    - 경영빅데이터 분석<br>
-                    - 건강보험공단 데이터 활용<br>
-                    - AI 기반 의사결정
-                </div>
-            </div>
-        </div>
-
-        <!-- 탭 5: 미래가치 -->
-        <div id="tab5" class="tab-content">
-            <h2>🔮 경영학이 미래에도 여전히 중요할까요?</h2>
-            
-            <div class="error-box" style="margin-bottom: 30px;">
-                <strong>🚀 오히려 더 중요해집니다!</strong>
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>AI 시대에도 필요한 이유</h3>
-                    <div class="info-box">
-                        <strong>기술 ≠ 비즈니스</strong><br>
-                        - AI/빅데이터를 비즈니스로 전환<br>
-                        - 기술 이해 + 사업모델 설계<br>
-                        - 인간 중심 가치 창출<br><br>
-                        
-                        <strong>경영 전문가 역할</strong><br>
-                        - 전략적 의사결정<br>
-                        - 이해관계자 조정<br>
-                        - 윤리적 경영 판단
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>미래 대비 연구</h3>
-                    <div class="success-box">
-                        <strong>최신 연구 주제</strong><br>
-                        - 생성형 AI 활용 ESG 분석<br>
-                        - 디지털 전환 시대 소비자 행동<br>
-                        - 헬스케어 디지털 혁신<br><br>
-                        
-                        <strong>실제 현황</strong><br>
-                        - 미국 의료시스템 92% 디지털 혁신 추진<br>
-                        - AI 기반 경영 의사결정 확산<br>
-                        - ESG 경영 의무화 추세
-                    </div>
-                </div>
-            </div>
-            
-            <div class="warning-box" style="margin-top: 30px;">
-                <strong>📍 경영학의 보편성</strong><br>
-                - 기업, 병원, 학교, NGO 모든 조직 적용 가능<br>
-                - 창업부터 대기업까지 필수 지식<br>
-                - 미래 헬스케어 리더 양성 목표
-            </div>
-        </div>
-
-        <!-- 탭 6: 팀프로젝트 -->
-        <div id="tab6" class="tab-content">
-            <h2>👥 경영학과는 팀플이 많다고 하던데, 정말인가요?</h2>
-            
-            <div class="success-box" style="margin-bottom: 30px;">
-                <strong>✅ 맞아요! 하지만 이유가 있습니다</strong>
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>왜 팀플이 많을까?</h3>
-                    <div class="info-box">
-                        - 실제 기업이 팀워크 기반<br>
-                        - 의사소통 능력 향상<br>
-                        - 문제해결 능력 배양<br>
-                        - 리더십 경험 축적
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>실전 경험</h3>
-                    <div class="warning-box">
-                        - 기업경영사례 경진대회<br>
-                        - 마케팅 전략 발표<br>
-                        - 비즈니스 플랜 수립<br>
-                        - 취업 시 큰 강점!
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 탭 7: 바이오융합 -->
-        <div id="tab7" class="tab-content">
-            <h2>🧬 바이오와 경영학이 어떻게 연결되나요?</h2>
-            
-            <div class="error-box" style="margin-bottom: 30px;">
-                <strong>💊 바이오 + 경영 = 최강 조합!</strong>
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>바이오 산업의 특성</h3>
-                    <div class="info-box">
-                        - R&D 비용: 수천억 원<br>
-                        - 제품 출시까지: 10년 이상<br>
-                        - 전략적 포트폴리오 관리 필수<br>
-                        - 파이낸싱 전문가 필요
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>졸업생 진출 현황</h3>
-                    <div class="success-box">
-                        - 바이오헬스케어 분야: <strong>24.9%</strong><br>
-                        - 삼성바이오로직스<br>
-                        - 차바이오텍<br>
-                        - 제약회사 다수
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 탭 8: 차대만의강점 -->
-        <div id="tab8" class="tab-content">
-            <h2>🏫 차의과학대 경영학은 다른 대학과 비교했을 때 특별한 점이 있나요?</h2>
-            
-            <div class="error-box" style="margin-bottom: 30px;">
-                <strong>🌟 바이오헬스케어 특화 경영학!</strong>
-            </div>
-            
-            <div class="columns columns-3">
-                <div>
-                    <h3>🏥 차병원 네트워크</h3>
-                    <div class="metric">
-                        <div class="metric-value">10.9%</div>
-                        <div class="metric-label">차병원그룹 취업</div>
-                        <div class="metric-delta">24명+</div>
-                    </div>
-                    <div class="info-box">
-                        <strong>계열사 진출</strong><br>
-                        - 차병원 (분당/강남/일산)<br>
-                        - 차바이오텍<br>
-                        - 차메디텍<br>
-                        - 차케어스
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>📚 특화 커리큘럼</h3>
-                    <div class="success-box">
-                        <strong>헬스케어 과목</strong><br>
-                        - 의료경영<br>
-                        - 바이오산업론<br>
-                        - 의료서비스마케팅<br>
-                        - 헬스케어 데이터분석
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>🤝 융합 전공</h3>
-                    <div class="warning-box">
-                        <strong>시너지 조합</strong><br>
-                        - 디지털보건의료<br>
-                        - AI의료데이터<br>
-                        - 바이오식의약학<br>
-                        - 미디어커뮤니케이션
-                    </div>
-                </div>
-            </div>
-            
-            <h3>🔬 연구 네트워크</h3>
-            <div class="info-box">
-                <strong>협력 기관</strong>: 한국조세재정연구원 | 국회예산정책처 | 금융감독원 | 건강보험공단<br><br>
-                <strong>국제 저널 게재</strong>: Psychology & Marketing | 한국방송학보 | 한국언론학보
-            </div>
-        </div>
-
-        <!-- 탭 9: 졸업생진로 -->
-        <div id="tab9" class="tab-content">
-            <h2>🎓 선배들은 주로 어디로 취업하나요?</h2>
-            
-            <div class="columns columns-4">
-                <div class="metric">
-                    <div class="metric-value">88.7%</div>
-                    <div class="metric-label">취업률</div>
-                    <div class="metric-delta">196명</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">5.4%</div>
-                    <div class="metric-label">창업</div>
-                    <div class="metric-delta">12명</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">5.9%</div>
-                    <div class="metric-label">대학원</div>
-                    <div class="metric-delta">13명</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">100%</div>
-                    <div class="metric-label">전체 졸업생</div>
-                    <div class="metric-delta">221명</div>
-                </div>
-            </div>
-            
-            <div class="columns columns-2" style="margin-top: 30px;">
-                <div>
-                    <h3>🏢 산업별 분포</h3>
-                    <div class="info-box">
-                        1️⃣ <strong>바이오헬스케어</strong> - 24.9%<br>
-                        2️⃣ <strong>금융</strong> - 19.5%<br>
-                        3️⃣ <strong>IT</strong> - 19.0%<br>
-                        4️⃣ <strong>차병원그룹</strong> - 10.9%<br>
-                        5️⃣ <strong>기타</strong> - 25.7%
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>💼 직무별 분포</h3>
-                    <div class="warning-box">
-                        1️⃣ <strong>경영기획</strong> - 48.9%<br>
-                        2️⃣ <strong>회계세무금융</strong> - 20.8%<br>
-                        3️⃣ <strong>마케팅</strong> - 14.0%<br>
-                        4️⃣ <strong>기타</strong> - 16.3%
-                    </div>
-                </div>
-            </div>
-            
-            <h3>🌟 주요 취업처</h3>
-            <div class="columns columns-4">
-                <div class="success-box">
-                    <strong>금융/증권</strong><br>
-                    - 하나은행<br>
-                    - SK증권<br>
-                    - 신한은행<br>
-                    - KB국민은행
-                </div>
-                
-                <div class="info-box">
-                    <strong>대기업</strong><br>
-                    - 현대자동차<br>
-                    - 삼성바이오로직스<br>
-                    - 롯데<br>
-                    - CJ올리브영
-                </div>
-                
-                <div class="warning-box">
-                    <strong>IT/플랫폼</strong><br>
-                    - 쿠팡<br>
-                    - 스마일게이트<br>
-                    - 메가존클라우드<br>
-                    - 이랜드
-                </div>
-                
-                <div class="error-box">
-                    <strong>병원/헬스케어</strong><br>
-                    - 세브란스병원<br>
-                    - 강남세브란스<br>
-                    - 차병원 계열<br>
-                    - 제약회사
-                </div>
-            </div>
-        </div>
-
-        <!-- 탭 10: 예술경영 -->
-        <div id="tab10" class="tab-content">
-            <h2>🎨 예술 쪽에 관심이 많은데, 경영학 전공이 도움이 될까요?</h2>
-            
-            <div class="success-box" style="margin-bottom: 30px;">
-                <strong>🎭 문화예술경영 분야로 진출 가능!</strong>
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>🎯 진로 분야</h3>
-                    <div class="info-box">
-                        <strong>문화예술 직무</strong><br>
-                        - 공연기획자 (PD)<br>
-                        - 미술관 큐레이터<br>
-                        - 문화마케터<br>
-                        - 엔터테인먼트 경영<br>
-                        - 축제/이벤트 기획<br>
-                        - 갤러리 운영
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>💼 실제 취업 사례</h3>
-                    <div class="warning-box">
-                        <strong>졸업생 진출처</strong><br>
-                        - FNC엔터테인먼트<br>
-                        - 환경재단 (서울환경영화제)<br>
-                        - 광고대행사<br>
-                        - 방송사<br>
-                        - 문화재단
-                    </div>
-                </div>
-            </div>
-            
-            <h3>📚 관련 지식 & 연구</h3>
-            <div class="columns columns-3">
-                <div class="success-box">
-                    <strong>활용 과목</strong><br>
-                    - 소비자행동 분석<br>
-                    - SNS 마케팅<br>
-                    - 프로젝트 관리<br>
-                    - 브랜딩 전략
-                </div>
-                
-                <div class="info-box">
-                    <strong>교수진 연구</strong><br>
-                    - 리뷰 효과 분석<br>
-                    - 도시브랜딩<br>
-                    - 관광심리학<br>
-                    - K-콘텐츠 해외진출
-                </div>
-                
-                <div class="error-box">
-                    <strong>왜 필요한가?</strong><br>
-                    - 예술도 관객이 있어야 함<br>
-                    - 수익모델 설계 필수<br>
-                    - 펀딩/스폰서십 확보<br>
-                    - 경영 마인드 = 경쟁력
-                </div>
-            </div>
-        </div>
-
-        <!-- 탭 11: 디지털vs AI -->
-        <div id="tab11" class="tab-content">
-            <h2>🤖 디지털보건의료와 AI의료데이터, 뭐가 다른가요?</h2>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>💻 디지털보건의료</h3>
-                    <div class="info-box">
-                        <strong>서비스 기획 중심</strong><br>
-                        - 사람과의 소통 중요<br>
-                        - 디지털 헬스 서비스 기획<br>
-                        - 병원 경영기획<br>
-                        - 의료정보 시스템 관리
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>📊 AI의료데이터</h3>
-                    <div class="success-box">
-                        <strong>데이터 분석 중심</strong><br>
-                        - 헬스케어 데이터 분석<br>
-                        - 보험 리스크 분석<br>
-                        - AI 기반 진단 보조<br>
-                        - 임상 데이터 관리
-                    </div>
-                </div>
-            </div>
-            
-            <div class="warning-box" style="margin-top: 20px;">
-                <strong>📍 둘 다 경영학과 시너지가 큽니다!</strong><br>
-                경영학 기초 위에 전문성을 더하면 헬스케어 산업의 핵심 인재가 됩니다.
-            </div>
-        </div>
-
-        <!-- 탭 12: 미디어융합 -->
-        <div id="tab12" class="tab-content">
-            <h2>📺 미디어커뮤니케이션이랑 경영학을 같이 하면 어떤가요?</h2>
-            
-            <div class="success-box" style="margin-bottom: 30px;">
-                <strong>🎯 완벽한 조합! 미디어 경영 전문가로 성장</strong>
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>💼 진로 분야</h3>
-                    <div class="info-box">
-                        <strong>미디어 경영 직무</strong><br>
-                        - IR (투자자 관계)<br>
-                        - PR (홍보)<br>
-                        - 콘텐츠 비즈니스<br>
-                        - 브랜드 커뮤니케이션<br>
-                        - 디지털 마케팅<br>
-                        - 인플루언서 마케팅
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>🌟 시대적 트렌드</h3>
-                    <div class="warning-box">
-                        <strong>왜 중요한가?</strong><br>
-                        - 모든 기업 = 미디어 기업<br>
-                        - 유튜브/인스타 자체 채널 운영<br>
-                        - 스토리텔링 = 핵심 역량<br>
-                        - 콘텐츠 = 새로운 자산
-                    </div>
-                </div>
-            </div>
-            
-            <h3>📚 관련 연구 & 강점</h3>
-            <div class="columns columns-3">
-                <div class="success-box">
-                    <strong>교수진 연구</strong><br>
-                    - SNS 마케팅 효과<br>
-                    - 온라인 리뷰 영향력<br>
-                    - K-콘텐츠 해외진출<br>
-                    - 인플루언서 ROI
-                </div>
-                
-                <div class="info-box">
-                    <strong>핵심 역량</strong><br>
-                    - 스토리텔링 능력<br>
-                    - 경영 감각<br>
-                    - 데이터 분석력<br>
-                    - 크리에이티브
-                </div>
-                
-                <div class="error-box">
-                    <strong>취업처</strong><br>
-                    - 광고대행사<br>
-                    - 방송사 전략팀<br>
-                    - 기업 커뮤니케이션실<br>
-                    - MCN 기업
-                </div>
-            </div>
-        </div>
-
-        <!-- 탭 13: 수포자OK -->
-        <div id="tab13" class="tab-content">
-            <h2>😰 수학이나 회계를 전혀 모르는데 따라갈 수 있을까요?</h2>
-            
-            <div class="success-box" style="margin-bottom: 30px;">
-                <strong>😊 걱정 마세요! 기초부터 차근차근!</strong>
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>📐 기초부터 시작</h3>
-                    <div class="info-box">
-                        <strong>회계원리</strong><br>
-                        - 자산 = 부채 + 자본<br>
-                        - 이 공식부터 시작!<br><br>
-                        
-                        <strong>경영통계</strong><br>
-                        - 평균, 분산부터 시작<br>
-                        - 고등학교 수학이면 충분
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>🤝 지원 시스템</h3>
-                    <div class="warning-box">
-                        - 교수학습지원센터 튜터링<br>
-                        - 선배 멘토링 프로그램<br>
-                        - 보충 수업 제공<br>
-                        - 스터디그룹 활성화
-                    </div>
-                </div>
-            </div>
-            
-            <div class="info-box" style="margin-top: 20px;">
-                <strong>💬 선배의 한마디</strong><br>
-                "대부분 학생이 아무것도 모르고 시작해요. 
-                교수님들이 정말 친절하게 알려주시고, 기초부터 탄탄히 배울 수 있어요!"
-            </div>
-        </div>
-
-        <!-- 탭 14: 영상광고 -->
-        <div id="tab14" class="tab-content">
-            <h2>🎬 영상이나 광고를 만드는 걸 좋아하는데, 경영학이랑 어떻게 연결할 수 있을까요?</h2>
-            
-            <div class="success-box" style="margin-bottom: 30px;">
-                <strong>🚀 영상 제작 + 경영 전략 = 최강 콘텐츠 크리에이터!</strong>
-            </div>
-            
-            <div class="columns columns-2">
-                <div>
-                    <h3>💡 시너지 효과</h3>
-                    <div class="info-box">
-                        <strong>창의성 + 전략성</strong><br>
-                        - 마케팅 프레임워크 → 영상 기획<br>
-                        - 타겟 분석 → 콘텐츠 최적화<br>
-                        - ROI 측정 → 효과 검증<br><br>
-                        
-                        <strong>비즈니스 콘텐츠</strong><br>
-                        - 단순 예쁜 영상 ❌<br>
-                        - 목표 달성하는 콘텐츠 ⭕<br>
-                        - 데이터 기반 크리에이티브
-                    </div>
-                </div>
-                
-                <div>
-                    <h3>🎯 실무 활용</h3>
-                    <div class="warning-box">
-                        <strong>기업 실무</strong><br>
-                        - A/B 테스트로 영상 최적화<br>
-                        - 데이터 기반 크리에이티브 개선<br>
-                        - 인플루언서 마케팅 ROI 분석<br>
-                        - SNS 캠페인 효과 측정<br><br>
-                        
-                        <strong>차별화 포인트</strong><br>
-                        - 창의적 + 분석적<br>
-                        - 아트 + 사이언스<br>
-                        - 감성 + 이성
-                    </div>
-                </div>
-            </div>
-            
-            <h3>📚 관련 교육 & 연구</h3>
-            <div class="columns columns-3">
-                <div class="success-box">
-                    <strong>활용 과목</strong><br>
-                    - 디지털 마케팅<br>
-                    - 소비자행동 연구<br>
-                    - 브랜드 전략<br>
-                    - 콘텐츠 비즈니스
-                </div>
-                
-                <div class="info-box">
-                    <strong>교수진 연구</strong><br>
-                    - 인플루언서 마케팅 ROI<br>
-                    - SNS 캠페인 효과<br>
-                    - 영상 콘텐츠 최적화<br>
-                    - 크리에이티브 전략
-                </div>
-                
-                <div class="error-box">
-                    <strong>진로</strong><br>
-                    - 광고 기획자<br>
-                    - 콘텐츠 PD<br>
-                    - 브랜드 필름 감독<br>
-                    - 디지털 마케터
-                </div>
-            </div>
-        </div>
+  <div class="sg">
+    <div class="sc reveal rv1">
+      <div class="sn" data-count="88">0</div>
+      <div class="sl">취업률 (%)</div>
+      <div class="ss">전국 평균 대비 우수</div>
     </div>
-
-    <footer>
-        <p>📧 문의: 미래융합대학 헬스케어융합학부 박대근 교수</p>
-        <p>🌐 전공 홈페이지: biz.cha.ac.kr</p>
-        <p style="margin-top: 15px; opacity: 0.8;">© 2025 차의과학대학교 경영학전공. All rights reserved.</p>
-    </footer>
-
-    <!-- ═══ PIP Avatar Widget ═══ -->
-    <div id="heygen-pip-container">
-      <iframe
-        id="heygen-pip"
-        src="https://interactiveavatarnextjsdemo.netlify.app"
-        allow="camera; microphone; autoplay; clipboard-write"
-      ></iframe>
-      <div class="pip-drag-border top"></div>
-      <div class="pip-drag-border left"></div>
-      <div class="pip-drag-border right"></div>
-      <div class="pip-drag-border bottom"></div>
-      <div class="pip-hover-gradient"></div>
-      <div class="pip-controls">
-        <button class="pip-ctrl-btn" onclick="toggleMinimizePIP()" title="최소화/복원">&#8722;</button>
-        <button class="pip-ctrl-btn close-btn" onclick="closePIP()" title="닫기">&times;</button>
-      </div>
+    <div class="sc reveal rv2">
+      <div class="sn" data-count="24">0</div>
+      <div class="sl">바이오헬스케어 (%)</div>
+      <div class="ss">산업별 진출 1위</div>
     </div>
-    <button id="heygen-pip-toggle" onclick="showPIP()">🎓</button>
+    <div class="sc reveal rv3">
+      <div class="sn" data-count="48">0</div>
+      <div class="sl">경영기획 직무 (%)</div>
+      <div class="ss">최다 직무 분야</div>
+    </div>
+    <div class="sc reveal rv4">
+      <div class="sn" data-count="196">0</div>
+      <div class="sl">취업자 수 (명)</div>
+      <div class="ss">최근 졸업생 기준</div>
+    </div>
+  </div>
 
-    <script>
-    // ── openTab ──
-    function openTab(tabId) {
-        const contents = document.getElementsByClassName('tab-content');
-        for (let content of contents) content.classList.remove('active');
-        const tabs = document.getElementsByClassName('tab');
-        for (let tab of tabs) tab.classList.remove('active');
-        document.getElementById(tabId).classList.add('active');
-        if (event && event.target && event.target.classList) {
-            event.target.classList.add('active');
-        } else {
-            const allTabs = document.getElementsByClassName('tab');
-            for (let tab of allTabs) {
-                const oc = tab.getAttribute('onclick');
-                if (oc && oc.includes(tabId)) { tab.classList.add('active'); break; }
-            }
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        const pipIframe = document.getElementById('heygen-pip');
-        if (pipIframe && pipIframe.contentWindow) {
-            pipIframe.contentWindow.postMessage({ type: 'TAB_CHANGED', tabId: tabId }, 'https://interactiveavatarnextjsdemo.netlify.app');
-        }
-    }
+  <div class="bw reveal rv2">
+    <div class="bl"><span>경영기획</span><span>48.9%</span></div>
+    <div class="bt"><div class="bf g" data-width="49"></div></div>
+  </div>
+  <div class="bw reveal rv3">
+    <div class="bl"><span>회계·세무·금융</span><span>20.8%</span></div>
+    <div class="bt"><div class="bf b" data-width="21"></div></div>
+  </div>
+  <div class="bw reveal rv4">
+    <div class="bl"><span>마케팅</span><span>14.0%</span></div>
+    <div class="bt"><div class="bf m" data-width="14"></div></div>
+  </div>
+</section>
 
-    // ── PIP Drag ──
-    const pipContainer = document.getElementById('heygen-pip-container');
-    const dragBorders = document.querySelectorAll('.pip-drag-border');
-    let isDragging = false, startX, startY, startLeft, startTop;
+<!-- S3: IDENTITY -->
+<section class="identity" id="s3" data-dot-dark>
+  <div class="stag reveal">ONLY ONE</div>
+  <h2 class="reveal">
+    전국에서 <span class="ac">유일하게</span><br>
+    의과학대학 안에 있는<br>
+    경영학 전공
+  </h2>
 
-    dragBorders.forEach(b => {
-        b.addEventListener('mousedown', startDrag);
-        b.addEventListener('touchstart', startDrag, { passive: false });
-    });
+  <div class="venn reveal rv1">
+    <div class="vc med">바이오<br>헬스케어</div>
+    <div class="vc biz">경영<br>전략</div>
+    <div class="vm">헬스케어 비즈니스 리더</div>
+  </div>
 
-    function startDrag(e) {
-        isDragging = true;
-        pipContainer.classList.add('dragging');
-        const t = e.touches ? e.touches[0] : e;
-        startX = t.clientX; startY = t.clientY;
-        const r = pipContainer.getBoundingClientRect();
-        startLeft = r.left; startTop = r.top;
-        e.preventDefault();
-    }
-    function drag(e) {
-        if (!isDragging) return;
-        const t = e.touches ? e.touches[0] : e;
-        let nl = startLeft + (t.clientX - startX);
-        let nt = startTop + (t.clientY - startY);
-        nl = Math.max(0, Math.min(nl, window.innerWidth - pipContainer.offsetWidth));
-        nt = Math.max(0, Math.min(nt, window.innerHeight - pipContainer.offsetHeight));
-        pipContainer.style.left = nl + 'px';
-        pipContainer.style.top = nt + 'px';
-        pipContainer.style.right = 'auto';
-        pipContainer.style.bottom = 'auto';
-        e.preventDefault();
-    }
-    function stopDrag() {
-        if (!isDragging) return;
-        isDragging = false;
-        pipContainer.classList.remove('dragging');
-    }
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', stopDrag);
-    document.addEventListener('touchmove', drag, { passive: false });
-    document.addEventListener('touchend', stopDrag);
+  <div class="chips reveal rv2">
+    <span class="chip">🏥 차병원그룹</span>
+    <span class="chip">삼성바이오로직스</span>
+    <span class="chip">하나은행</span>
+    <span class="chip">쿠팡</span>
+    <span class="chip">현대자동차</span>
+    <span class="chip">CJ올리브영</span>
+    <span class="chip" style="border-color:rgba(201,168,76,.2);color:var(--gold-soft)">+ 더 보기</span>
+  </div>
 
-    // ── PIP Controls ──
-    let isPIPMinimized = false;
-    function toggleMinimizePIP() {
-        const r = pipContainer.getBoundingClientRect();
-        if (!isPIPMinimized) {
-            pipContainer.style.left = (r.right - 120) + 'px';
-            pipContainer.style.top = (r.bottom - 68) + 'px';
-            pipContainer.style.right = 'auto';
-            pipContainer.style.bottom = 'auto';
-            isPIPMinimized = true;
-            pipContainer.classList.add('minimized');
-        } else {
-            isPIPMinimized = false;
-            pipContainer.classList.remove('minimized');
-        }
-    }
-    function closePIP() {
-        const iframe = document.getElementById('heygen-pip');
-        if (iframe.contentWindow) iframe.contentWindow.postMessage({ type: 'END_SESSION' }, '*');
-        pipContainer.classList.add('hidden');
-    }
-    function showPIP() {
-        pipContainer.classList.remove('hidden');
-        if (isPIPMinimized) { isPIPMinimized = false; pipContainer.classList.remove('minimized'); }
-    }
+  <p style="font-size:13px;color:var(--text-muted);line-height:1.7;margin-top:12px" class="reveal rv3">
+    졸업생 10.9%가 차병원그룹에 취업<br>
+    의료경영 · 바이오산업론 · 헬스케어 데이터분석<br>
+    <span style="color:var(--text-dim)">다른 대학에는 없는 특화 커리큘럼</span>
+  </p>
+</section>
 
-    // ── PIP에서 탭 이동 수신 ──
-    window.addEventListener('message', (event) => {
-        const allowed = ['https://interactiveavatarnextjsdemo.netlify.app','http://localhost','http://127.0.0.1'];
-        if (!allowed.some(o => event.origin.startsWith(o))) return;
-        const { type, tabId } = event.data || {};
-        if (type === 'NAVIGATE_TAB' && tabId) openTab(tabId);
-    });
-    </script>
+<!-- S4: RESEARCH -->
+<section class="research" id="s4" data-dot-dark>
+  <div class="stag reveal">RESEARCH</div>
+  <h2 class="reveal">세계가 인정한 연구</h2>
+  <p class="sub reveal rv1">국내외 학술지 게재 성과</p>
+
+  <div class="rcards">
+    <div class="rc reveal rv1">
+      <div class="ri">🎯</div>
+      <h3>경영기획</h3>
+      <p>ESG 평가지표 개발, 기업지배구조 개선, AI 활용 시계열 예측 연구</p>
+      <div class="jr">Applied Economics Letters · Journal of Forecasting</div>
+    </div>
+    <div class="rc reveal rv2">
+      <div class="ri">📊</div>
+      <h3>마케팅</h3>
+      <p>AI 서비스 로봇 수용도, MZ세대 SNS 전략, K-콘텐츠 글로벌 시장 전략</p>
+      <div class="jr">Psychology &amp; Marketing · Int'l Journal of Hospitality Mgmt</div>
+    </div>
+    <div class="rc reveal rv3">
+      <div class="ri">💰</div>
+      <h3>회계재무</h3>
+      <p>제약·바이오 R&amp;D 회계처리, 주주권 행사와 이익조정, 신용평가 적시성</p>
+      <div class="jr">회계학연구 · 경영학연구</div>
+    </div>
+  </div>
+  <p class="swh">← 스와이프 →</p>
+</section>
+
+<!-- S5: CAREERS -->
+<section class="careers" id="s5" data-dot-dark>
+  <div class="stag reveal">CAREERS</div>
+  <h2 class="reveal">선배들이 간 곳</h2>
+  <p class="sub reveal rv1">주요 취업처</p>
+
+  <div class="cg">
+    <div class="cc reveal rv1">
+      <h4>금융·증권</h4>
+      <ul><li>하나은행</li><li>SK증권</li><li>신한은행</li><li>KB국민은행</li></ul>
+    </div>
+    <div class="cc reveal rv2">
+      <h4>대기업</h4>
+      <ul><li>현대자동차</li><li>삼성바이오로직스</li><li>롯데</li><li>CJ올리브영</li></ul>
+    </div>
+    <div class="cc reveal rv3">
+      <h4>IT·플랫폼</h4>
+      <ul><li>쿠팡</li><li>스마일게이트</li><li>메가존클라우드</li><li>이랜드</li></ul>
+    </div>
+    <div class="cc reveal rv4">
+      <h4>병원·헬스케어</h4>
+      <ul><li>세브란스병원</li><li>강남세브란스</li><li>차병원 계열</li><li>제약회사</li></ul>
+    </div>
+  </div>
+
+  <div class="sr reveal rv3">
+    <span class="sc2 bio">바이오헬스케어 24.9%</span>
+    <span class="sc2 fin">금융 19.5%</span>
+    <span class="sc2 it">IT 19.0%</span>
+    <span class="sc2 hosp">차병원그룹 10.9%</span>
+  </div>
+</section>
+
+<!-- S6: CURRICULUM -->
+<section class="curriculum" id="s6" data-dot-dark>
+  <div class="stag reveal">ROADMAP</div>
+  <h2 class="reveal">3가지 트랙으로 성장</h2>
+  <p class="sub reveal rv1">경영학 세부전공 로드맵</p>
+
+  <div class="tl">
+    <div class="ti reveal rv1">
+      <div class="ty">경영기획</div>
+      <div class="tt">전략 수립 · ESG 경영 · 조직 설계</div>
+      <div class="tg"><span>기업전략</span><span>ESG</span><span>컨설팅</span><span>조직관리</span></div>
+    </div>
+    <div class="ti reveal rv2">
+      <div class="ty">마케팅</div>
+      <div class="tt">소비자 행동 · 디지털 마케팅 · 브랜드</div>
+      <div class="tg"><span>소비자행동</span><span>SNS전략</span><span>브랜드매니저</span><span>AI마케팅</span></div>
+    </div>
+    <div class="ti reveal rv3">
+      <div class="ty">회계재무</div>
+      <div class="tt">재무제표 · 투자의사결정 · 리스크 관리</div>
+      <div class="tg"><span>CPA</span><span>애널리스트</span><span>펀드매니저</span><span>바이오R&amp;D</span></div>
+    </div>
+  </div>
+
+  <p style="font-size:12px;color:var(--text-muted);margin-top:20px;line-height:1.7" class="reveal rv4">
+    + 차의과학대 특화: <span style="color:var(--gold-soft)">헬스케어 비즈니스</span> · <span style="color:var(--blue-soft)">비즈니스 애널리틱스</span>
+  </p>
+</section>
+
+<!-- S7: CTA -->
+<section class="cta-s" id="s7" data-dot-dark>
+  <div class="stag reveal">CHAT</div>
+  <h2 class="reveal">궁금한 게 있다면,<br>직접 물어보세요</h2>
+  <p class="sub reveal rv1">AI 아바타가 실시간으로 답해드립니다</p>
+
+  <div class="reveal rv2">
+    <button class="cta-btn" onclick="showPIP()">
+      <span class="pd"></span>
+      AI 아바타와 대화하기
+    </button>
+    <p class="cn">화면 우측 하단의 AI 아바타에게<br>언제든지 질문할 수 있습니다</p>
+  </div>
+</section>
+
+<footer class="footer">
+  차의과학대학교 미래융합대학 · 경영학전공<br>
+  경기도 포천시 해룡로 120<br>
+  <a href="https://biz.cha.ac.kr">biz.cha.ac.kr</a> · 박대근 교수<br><br>
+  <span>© 2025 CHA University. All rights reserved.</span>
+</footer>
+
+<!-- PIP Avatar -->
+<div id="heygen-pip-container">
+  <iframe id="heygen-pip" src="https://interactiveavatarnextjsdemo.netlify.app" allow="camera; microphone; autoplay; clipboard-write"></iframe>
+  <div class="pdb top"></div>
+  <div class="pdb left"></div>
+  <div class="pdb right"></div>
+  <div class="pdb bottom"></div>
+  <div class="phg"></div>
+  <div class="pc">
+    <button class="pcb" onclick="toggleMinimizePIP()" title="최소화/복원">&#8722;</button>
+    <button class="pcb cb" onclick="closePIP()" title="닫기">&times;</button>
+  </div>
+</div>
+<button id="heygen-pip-toggle" onclick="showPIP()">🎓</button>
+
+<script>
+// Scroll reveal
+const reveals=document.querySelectorAll('.reveal');
+new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'}).observe||reveals.forEach(el=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'}).observe(el));
+// fix
+const rObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+reveals.forEach(el=>rObs.observe(el));
+
+// Count-up
+document.querySelectorAll('[data-count]').forEach(el=>{
+  const o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const t=parseInt(el.dataset.count);let c=0;const s=Math.max(t/40,1);const tm=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(tm)}el.textContent=Math.floor(c)},25);o.unobserve(el)}})},{threshold:.5});
+  o.observe(el);
+});
+
+// Bar fill
+document.querySelectorAll('.bf').forEach(bar=>{
+  const o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){bar.style.width=bar.dataset.width+'%';o.unobserve(bar)}})},{threshold:.3});
+  o.observe(bar);
+});
+
+// Nav dots
+const secs=document.querySelectorAll('section');
+const nd=document.getElementById('navDots');
+secs.forEach(()=>{const d=document.createElement('button');d.className='nav-dot';nd.appendChild(d)});
+const dots=document.querySelectorAll('.nav-dot');
+dots.forEach((d,i)=>{d.onclick=()=>secs[i].scrollIntoView({behavior:'smooth'})});
+new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=Array.from(secs).indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('active',j===i))}})},{threshold:.4}).observe||secs.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=Array.from(secs).indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('active',j===i))}})},{threshold:.4}).observe(s));
+// fix
+const dObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=Array.from(secs).indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('active',j===i))}})},{threshold:.4});
+secs.forEach(s=>dObs.observe(s));
+
+// PIP Drag
+const pc=document.getElementById('heygen-pip-container');
+const dbs=document.querySelectorAll('.pdb');
+let dragging=false,sx,sy,sl,st;
+dbs.forEach(b=>{b.addEventListener('mousedown',sd);b.addEventListener('touchstart',sd,{passive:false})});
+function sd(e){dragging=true;pc.classList.add('dragging');const t=e.touches?e.touches[0]:e;sx=t.clientX;sy=t.clientY;const r=pc.getBoundingClientRect();sl=r.left;st=r.top;e.preventDefault()}
+function dr(e){if(!dragging)return;const t=e.touches?e.touches[0]:e;let nl=sl+(t.clientX-sx),nt=st+(t.clientY-sy);nl=Math.max(0,Math.min(nl,innerWidth-pc.offsetWidth));nt=Math.max(0,Math.min(nt,innerHeight-pc.offsetHeight));pc.style.left=nl+'px';pc.style.top=nt+'px';pc.style.right='auto';pc.style.bottom='auto';e.preventDefault()}
+function sdr(){if(!dragging)return;dragging=false;pc.classList.remove('dragging')}
+document.addEventListener('mousemove',dr);document.addEventListener('mouseup',sdr);
+document.addEventListener('touchmove',dr,{passive:false});document.addEventListener('touchend',sdr);
+
+// PIP Controls
+let isMin=false;
+function toggleMinimizePIP(){const r=pc.getBoundingClientRect();if(!isMin){pc.style.left=(r.right-120)+'px';pc.style.top=(r.bottom-68)+'px';pc.style.right='auto';pc.style.bottom='auto';isMin=true;pc.classList.add('minimized')}else{isMin=false;pc.classList.remove('minimized')}}
+function closePIP(){const f=document.getElementById('heygen-pip');if(f.contentWindow)f.contentWindow.postMessage({type:'END_SESSION'},'*');pc.classList.add('hidden')}
+function showPIP(){pc.classList.remove('hidden');if(isMin){isMin=false;pc.classList.remove('minimized')}}
+
+// PIP message
+window.addEventListener('message',e=>{
+  const a=['https://interactiveavatarnextjsdemo.netlify.app','http://localhost','http://127.0.0.1'];
+  if(!a.some(o=>e.origin.startsWith(o)))return;
+  const{type,tabId}=e.data||{};
+  if(type==='NAVIGATE_TAB'&&tabId)console.log('NAVIGATE_TAB:',tabId);
+});
+</script>
 </body>
 </html>
