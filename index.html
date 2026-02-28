@@ -1228,12 +1228,33 @@
     function toggleMinimizePIP(){const r=pc.getBoundingClientRect();if(!isMin){pc.style.left=(r.right-120)+'px';pc.style.top=(r.bottom-68)+'px';pc.style.right='auto';pc.style.bottom='auto';isMin=true;pc.classList.add('minimized')}else{isMin=false;pc.classList.remove('minimized')}}
     function closePIP(){const f=document.getElementById('heygen-pip');if(f.contentWindow)f.contentWindow.postMessage({type:'END_SESSION'},'*');pc.classList.add('hidden')}
     function showPIP(){pc.classList.remove('hidden');if(isMin){isMin=false;pc.classList.remove('minimized')}}
-    // PIP message
-    window.addEventListener('message',e=>{
-    const a=['https://interactiveavatarnextjsdemo.netlify.app','http://localhost','http://127.0.0.1'];
-    if(!a.some(o=>e.origin.startsWith(o)))return;
-    const{type,tabId}=e.data||{};
-    if(type==='NAVIGATE_TAB'&&tabId)console.log('NAVIGATE_TAB:',tabId);
+    // PIP message — tab → section 매핑 후 스크롤
+    const tabToSection = {
+      tab1: 's4',  // 연구분야 → RESEARCH
+      tab2: 's6',  // 통합교육 → CURRICULUM
+      tab3: 's2',  // 취업전망 → NUMBERS
+      tab4: 's6',  // 세부전공 → CURRICULUM
+      tab5: 's3',  // 미래가치 → IDENTITY
+      tab6: 's6',  // 팀프로젝트 → CURRICULUM
+      tab7: 's3',  // 바이오융합 → IDENTITY
+      tab8: 's3',  // 차대만의강점 → IDENTITY
+      tab9: 's5',  // 졸업생진로 → CAREERS
+      tab10: 's5', // 예술경영 → CAREERS
+      tab11: 's6', // 디지털vsAI → CURRICULUM
+      tab12: 's6', // 미디어융합 → CURRICULUM
+      tab13: 's6', // 수포자OK → CURRICULUM
+      tab14: 's5', // 영상광고 → CAREERS
+    };
+    window.addEventListener('message', e => {
+      const a = ['https://interactiveavatarnextjsdemo.netlify.app','http://localhost','http://127.0.0.1'];
+      if (!a.some(o => e.origin.startsWith(o))) return;
+      const { type, tabId } = e.data || {};
+      if (type === 'NAVIGATE_TAB' && tabId) {
+        const sectionId = tabToSection[tabId] || 's1';
+        console.log('📑 NAVIGATE_TAB:', tabId, '→ scroll to', sectionId);
+        const section = document.getElementById(sectionId);
+        if (section) section.scrollIntoView({ behavior: 'smooth' });
+      }
     });
   </script>
 </body>
