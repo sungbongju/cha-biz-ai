@@ -65,12 +65,12 @@ section{position:relative;padding:100px 24px;overflow:hidden}
 .card:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3)}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--blue));opacity:0;transition:opacity 0.3s}
 .card:hover::before{opacity:1}
-.ci{display:flex;align-items:center;margin-bottom:16px}
-.ci-g{color:var(--gold)}
-.ci-b{color:var(--blue)}
-.ci-m{color:var(--mint)}
-.ci-c{color:var(--coral)}
-.ci-p{color:var(--purple)}
+.ci{display:flex;align-items:center;margin-bottom:16px;transition:filter 0.3s}
+.ci-g{color:#d4c09a;filter:drop-shadow(0 0 6px rgba(212,192,154,0.25))}
+.ci-b{color:#8aa8d4;filter:drop-shadow(0 0 6px rgba(138,168,212,0.25))}
+.ci-m{color:#7cc4a8;filter:drop-shadow(0 0 6px rgba(124,196,168,0.2))}
+.ci-c{color:#cf9b9b;filter:drop-shadow(0 0 6px rgba(207,155,155,0.2))}
+.ci-p{color:#b0a0d4;filter:drop-shadow(0 0 6px rgba(176,160,212,0.25))}
 .card h3{font-size:17px;font-weight:700;margin-bottom:8px}
 .card p{font-size:13px;color:var(--text-dim);line-height:1.7}
 .card .cm{font-size:11px;color:var(--text-muted);margin-top:12px;font-style:italic}
