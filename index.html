@@ -54,7 +54,6 @@
 
 html  {
     scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
     overflow-y: scroll;
 }
 
@@ -67,17 +66,17 @@ body  {
 }
 
 section  {
-
-    min-height: 100vh;
-    min-height: 100svh;
-    padding: 70px 28px 50px;
+    padding: 72px 28px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     position: relative;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
     overflow: hidden;
+}
+
+section.hero  {
+    min-height: 100vh;
+    min-height: 100svh;
+    justify-content: center;
 }
 
 /* Reveal */
@@ -1821,7 +1820,7 @@ new IntersectionObserver(es => {
 );
 }
 , {
-    threshold: 0.4 }
+    threshold: 0.15 }
     ).observe(secs[0]);
     secs.forEach(s => new IntersectionObserver(es => {
         es.forEach(e => {
@@ -1833,7 +1832,7 @@ new IntersectionObserver(es => {
     );
 }
 , {
-    threshold: 0.4 }
+    threshold: 0.15 }
     ).observe(s));
 
     // PIP Drag
