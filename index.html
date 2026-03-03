@@ -65,12 +65,12 @@ section{position:relative;padding:100px 24px;overflow:hidden}
 .card:hover{box-shadow:0 12px 40px rgba(0,0,0,0.3)}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--blue));opacity:0;transition:opacity 0.3s}
 .card:hover::before{opacity:1}
-.ci{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;color:#fff}
-.ci-g{background:linear-gradient(135deg,var(--gold),#b8942e)}
-.ci-b{background:linear-gradient(135deg,var(--blue),#3a5fcc)}
-.ci-m{background:linear-gradient(135deg,var(--mint),#22b07a)}
-.ci-c{background:linear-gradient(135deg,var(--coral),#e05050)}
-.ci-p{background:linear-gradient(135deg,var(--purple),#8b6de0)}
+.ci{display:flex;align-items:center;margin-bottom:16px}
+.ci-g{color:var(--gold)}
+.ci-b{color:var(--blue)}
+.ci-m{color:var(--mint)}
+.ci-c{color:var(--coral)}
+.ci-p{color:var(--purple)}
 .card h3{font-size:17px;font-weight:700;margin-bottom:8px}
 .card p{font-size:13px;color:var(--text-dim);line-height:1.7}
 .card .cm{font-size:11px;color:var(--text-muted);margin-top:12px;font-style:italic}
