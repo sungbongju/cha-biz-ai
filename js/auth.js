@@ -1,475 +1,534 @@
 /**
- * CHA 경영학전공 — 인증 · 세션 · 아바타 연동 · 체류시간 추적
- * 
- * 미컴(mediacom) auth.js 구조를 경영학용으로 수정
- * - API_BASE: business-api
- * - 키 접두사: business_
- * - 로그인 모달: 다크테마 (#login-modal)
- * - User Top Bar: #user-top-bar, #user-badge, #logout-btn
- * - MBTI T/F 제거 (경영학에는 없음)
+ * ================================================
+ * auth.js - 경영학전공 카카오 로그인 + 행동추적
+ * ================================================
+ *
+ * 기능:
+ * 1. 카카오 소셜 로그인 / 게스트 모드
+ * 2. 아바타 봇에 사용자 정보 + 토큰 전달
+ * 3. 섹션별 체류시간 자동 추적 (IntersectionObserver)
+ * 4. 행동 로그 배치 전송 (5개마다 or 페이지 떠날 때)
+ * 5. 전공 트랙 추천 연동
+ * 6. 개인화 인사말용 이력 조회 (user_history)
+ * ================================================
  */
 
-const AUTH_CONFIG = {
-  API_BASE: 'https://aiforalab.com/business-api/api.php',
-  TOKEN_KEY: 'business_token',
-  USER_KEY: 'business_user',
-  SESSION_KEY: 'business_session',
-  TOKEN_EXPIRY_DAYS: 7,
-};
+(function () {
+  'use strict';
 
-// ─── AuthManager ───
-const AuthManager = {
-  _user: null,
-  _token: null,
-  _sessionId: null,
-  _sectionTimes: {},
-  _sectionTimers: {},
-  _pendingSectionData: [],
+  var API_BASE = 'https://aiforalab.com/business-api/api.php';
+  var KAKAO_JS_KEY = 'fc0a1313d895b1956f3830e5bf14307b';
+  var TOKEN_KEY = 'business_token';
+  var USER_KEY = 'business_user';
+  var SESSION_KEY = 'business_session';
 
-  // ════════════════════════════════════
-  // 초기화 — 페이지 로드 시 호출
-  // ════════════════════════════════════
-  init: function() {
-    console.log('🔐 AuthManager init (경영학)');
+  // ============================================
+  // 1. 세션 관리
+  // ============================================
 
-    // 저장된 토큰/사용자 복원 시도
-    var savedToken = localStorage.getItem(AUTH_CONFIG.TOKEN_KEY);
-    var savedUser = localStorage.getItem(AUTH_CONFIG.USER_KEY);
+  function getStoredSession() {
+    try {
+      var token = localStorage.getItem(TOKEN_KEY);
+      var user = JSON.parse(localStorage.getItem(USER_KEY) || 'null');
+      if (token && user) return { token: token, user: user };
+    } catch (e) { }
+    return null;
+  }
 
-    if (savedToken && savedUser) {
-      try {
-        this._token = savedToken;
-        this._user = JSON.parse(savedUser);
-        this._sessionId = localStorage.getItem(AUTH_CONFIG.SESSION_KEY) || this._generateSessionId();
-        console.log('✅ 세션 복원:', this._user.name);
-
-        // 토큰 검증
-        this._verifyToken();
-      } catch (e) {
-        console.warn('⚠️ 세션 복원 실패, 로그인 필요');
-        this._clearSession();
-        this._showLoginModal();
-      }
-    } else {
-      this._showLoginModal();
+  function saveSession(token, user) {
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    if (!localStorage.getItem(SESSION_KEY)) {
+      localStorage.setItem(SESSION_KEY, generateSessionId());
     }
+  }
 
-    // 이벤트 바인딩
-    this._bindEvents();
-  },
+  function clearSession() {
+    stopTracking();
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(SESSION_KEY);
+  }
 
-  // ════════════════════════════════════
-  // 토큰 검증
-  // ════════════════════════════════════
-  _verifyToken: function() {
-    var self = this;
-    fetch(AUTH_CONFIG.API_BASE + '?action=verify', {
-      headers: { 'Authorization': 'Bearer ' + this._token }
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data.success) {
-        console.log('✅ 토큰 유효');
-        self._onLoginSuccess();
-      } else {
-        console.warn('⚠️ 토큰 만료');
-        self._clearSession();
-        self._showLoginModal();
-      }
-    })
-    .catch(function(err) {
-      console.warn('⚠️ 토큰 검증 실패 (오프라인?):', err);
-      // 오프라인이어도 일단 허용
-      self._onLoginSuccess();
-    });
-  },
-
-  // ════════════════════════════════════
-  // 이벤트 바인딩
-  // ════════════════════════════════════
-  _bindEvents: function() {
-    var self = this;
-
-    // 로그인 폼 제출
-    var form = document.getElementById('login-form');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        self._handleLogin();
-      });
+  function getSessionId() {
+    var sid = localStorage.getItem(SESSION_KEY);
+    if (!sid) {
+      sid = generateSessionId();
+      localStorage.setItem(SESSION_KEY, sid);
     }
+    return sid;
+  }
 
-    // 게스트 버튼
-    var guestBtn = document.getElementById('login-guest-btn');
-    if (guestBtn) {
-      guestBtn.addEventListener('click', function() {
-        self._handleGuest();
-      });
-    }
+  function generateSessionId() {
+    return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+  }
 
-    // 로그아웃 버튼
-    var logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', function() {
-        self._handleLogout();
-      });
-    }
+  // ============================================
+  // 2. 카카오 로그인
+  // ============================================
 
-    // 페이지 이탈 시 체류시간 전송
-    window.addEventListener('beforeunload', function() {
-      self._flushSectionTimes(true);
-    });
-
-    // visibilitychange에서도 전송
-    document.addEventListener('visibilitychange', function() {
-      if (document.visibilityState === 'hidden') {
-        self._flushSectionTimes(true);
-      }
-    });
-  },
-
-  // ════════════════════════════════════
-  // 로그인 처리
-  // ════════════════════════════════════
-  _handleLogin: function() {
-    var self = this;
-    var studentId = document.getElementById('login-student-id').value.trim();
-    var name = document.getElementById('login-name').value.trim();
-    var errorEl = document.getElementById('login-error');
-    var submitBtn = document.querySelector('.login-submit');
-
-    // 유효성 검사
-    if (!studentId || !name) {
-      errorEl.textContent = '학번과 이름을 모두 입력해주세요.';
-      errorEl.style.display = 'block';
+  function kakaoLogin() {
+    if (!window.Kakao || !Kakao.isInitialized()) {
+      alert('카카오 SDK가 로드되지 않았습니다. 페이지를 새로고침해주세요.');
       return;
     }
 
-    if (!/^\d{4,12}$/.test(studentId)) {
-      errorEl.textContent = '학번은 4~12자리 숫자로 입력해주세요.';
-      errorEl.style.display = 'block';
-      return;
-    }
+    Kakao.Auth.login({
+      success: function (authObj) {
+        console.log('[Auth] Kakao login success, getting user info...');
 
-    // 로딩 상태
-    submitBtn.disabled = true;
-    submitBtn.textContent = '로그인 중...';
-    errorEl.style.display = 'none';
+        Kakao.API.request({
+          url: '/v2/user/me',
+          success: function (res) {
+            console.log('[Auth] Kakao user info:', res);
 
-    fetch(AUTH_CONFIG.API_BASE + '?action=login', {
+            var kakaoId = String(res.id);
+            var nickname = (res.properties && res.properties.nickname) ? res.properties.nickname : '사용자';
+            var email = (res.kakao_account && res.kakao_account.email) ? res.kakao_account.email : null;
+
+            sendKakaoLoginToServer(kakaoId, nickname, email);
+          },
+          fail: function (err) {
+            console.error('[Auth] Kakao user info error:', err);
+            alert('카카오 사용자 정보를 가져오지 못했습니다.');
+          }
+        });
+      },
+      fail: function (err) {
+        console.error('[Auth] Kakao login error:', err);
+        alert('카카오 로그인에 실패했습니다. 다시 시도해주세요.');
+      }
+    });
+  }
+
+  function sendKakaoLoginToServer(kakaoId, nickname, email) {
+    fetch(API_BASE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        student_id: studentId,
-        name: name
+        action: 'kakao_login',
+        kakao_id: kakaoId,
+        nickname: nickname,
+        email: email
       })
     })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
       if (data.success) {
-        console.log('✅ 로그인 성공:', data.user.name);
-        self._token = data.token;
-        self._user = data.user;
-        self._sessionId = self._generateSessionId();
+        saveSession(data.token, data.user);
+        updateUI(data.user);
+        sendUserInfoToAvatar(data.user, data.token);
+        startTracking();
 
-        // 로컬 저장
-        localStorage.setItem(AUTH_CONFIG.TOKEN_KEY, data.token);
-        localStorage.setItem(AUTH_CONFIG.USER_KEY, JSON.stringify(data.user));
-        localStorage.setItem(AUTH_CONFIG.SESSION_KEY, self._sessionId);
+        // 로그인 모달 닫기
+        var modal = document.getElementById('login-modal');
+        if (modal) modal.classList.remove('active');
 
-        self._onLoginSuccess();
-
-        // 방문 로그 저장
-        self._logVisit();
+        console.log('[Auth] 카카오 로그인 성공:', data.user.name, '(visit:', data.user.visit_count, ')');
       } else {
-        errorEl.textContent = data.error || '로그인에 실패했습니다.';
-        errorEl.style.display = 'block';
+        alert('로그인 실패: ' + (data.error || '알 수 없는 오류'));
       }
     })
-    .catch(function(err) {
-      console.warn('⚠️ 서버 연결 실패, 오프라인 로그인:', err);
-      self._offlineLogin(studentId, name);
-    })
-    .finally(function() {
-      submitBtn.disabled = false;
-      submitBtn.textContent = '시작하기';
+    .catch(function (e) {
+      console.error('[Auth] Server error:', e);
+      alert('서버 연결 실패');
     });
-  },
+  }
 
-  // ════════════════════════════════════
-  // 오프라인 로그인 (서버 연결 실패 시)
-  // ════════════════════════════════════
-  _offlineLogin: function(studentId, name) {
-    console.log('📴 오프라인 로그인:', name);
-    this._user = {
-      id: 0,
-      student_id: studentId,
-      name: name,
-      visit_count: 1
-    };
-    this._token = 'offline_' + Date.now();
-    this._sessionId = this._generateSessionId();
+  // ============================================
+  // 3. 로그아웃
+  // ============================================
 
-    localStorage.setItem(AUTH_CONFIG.TOKEN_KEY, this._token);
-    localStorage.setItem(AUTH_CONFIG.USER_KEY, JSON.stringify(this._user));
-    localStorage.setItem(AUTH_CONFIG.SESSION_KEY, this._sessionId);
+  function logout() {
+    // 남은 로그 전송
+    flushLogs(true);
 
-    this._onLoginSuccess();
-  },
+    // 카카오 로그아웃
+    if (window.Kakao && Kakao.Auth && Kakao.Auth.getAccessToken()) {
+      try {
+        Kakao.Auth.logout(function () {
+          console.log('[Auth] Kakao logout');
+        });
+      } catch (e) { }
+    }
 
-  // ════════════════════════════════════
-  // 게스트 모드
-  // ════════════════════════════════════
-  _handleGuest: function() {
-    console.log('👤 게스트 모드');
-    this._user = {
-      id: 0,
-      student_id: 'guest',
-      name: '게스트',
-      visit_count: 0
-    };
-    this._token = null;
-    this._sessionId = this._generateSessionId();
+    clearSession();
+    updateUI(null);
+    location.reload();
+  }
 
-    this._hideLoginModal();
-    this._updateUI();
-    // 게스트는 DB 저장 안 함, 아바타에도 전달
-    this._sendUserToAvatar();
-  },
+  // ============================================
+  // 4. UI 업데이트
+  // ============================================
 
-  // ════════════════════════════════════
-  // 로그인 성공 후 처리
-  // ════════════════════════════════════
-  _onLoginSuccess: function() {
-    this._hideLoginModal();
-    this._updateUI();
-    this._sendUserToAvatar();
-    this._setupSectionTracking();
-  },
-
-  // ════════════════════════════════════
-  // 로그아웃
-  // ════════════════════════════════════
-  _handleLogout: function() {
-    console.log('🚪 로그아웃');
-    this._flushSectionTimes(true);
-    this._clearSession();
-    this._showLoginModal();
-    this._updateUI();
-  },
-
-  // ════════════════════════════════════
-  // UI 업데이트
-  // ════════════════════════════════════
-  _updateUI: function() {
+  function updateUI(user) {
     var topBar = document.getElementById('user-top-bar');
     var badge = document.getElementById('user-badge');
 
-    if (this._user && this._user.name) {
-      // 상단바 표시
+    if (user && user.name) {
       if (topBar) topBar.classList.add('show');
-
-      // 뱃지에 이름 표시
       if (badge) {
         var visitText = '';
-        if (this._user.visit_count && this._user.visit_count > 1) {
-          visitText = ' · ' + this._user.visit_count + '회 방문';
+        if (user.visit_count && user.visit_count > 1) {
+          visitText = ' \u00b7 ' + user.visit_count + '회 방문';
         }
-        badge.textContent = this._user.name + visitText;
+        badge.textContent = user.name + visitText;
       }
     } else {
       if (topBar) topBar.classList.remove('show');
     }
-  },
-
-  // ════════════════════════════════════
-  // 아바타에 사용자 정보 전달 (postMessage)
-  // ════════════════════════════════════
-  _sendUserToAvatar: function() {
-    var iframe = document.getElementById('heygen-pip');
-    if (!iframe || !iframe.contentWindow) {
-      console.warn('⚠️ 아바타 iframe 없음');
-      return;
-    }
-
-    var payload = {
-      type: 'USER_INFO',
-      user: this._user,
-      token: this._token,
-      sessionId: this._sessionId,
-      apiBase: AUTH_CONFIG.API_BASE
-    };
-
-    // iframe 로드 완료 후 전송 (약간의 딜레이)
-    var self = this;
-    setTimeout(function() {
-      try {
-        iframe.contentWindow.postMessage(payload, '*');
-        console.log('📤 USER_INFO 전송:', self._user ? self._user.name : 'null');
-      } catch (e) {
-        console.warn('⚠️ postMessage 전송 실패:', e);
-      }
-    }, 1000);
-
-    // iframe이 늦게 로드될 수 있으므로 추가 전송
-    setTimeout(function() {
-      try {
-        iframe.contentWindow.postMessage(payload, '*');
-      } catch (e) { /* 무시 */ }
-    }, 3000);
-  },
-
-  // ════════════════════════════════════
-  // 방문 로그 저장
-  // ════════════════════════════════════
-  _logVisit: function() {
-    if (!this._token || this._token.indexOf('offline') === 0) return;
-
-    this.apiCall('log', 'POST', {
-      url: location.href,
-      user_agent: navigator.userAgent,
-      referrer: document.referrer || ''
-    });
-  },
-
-  // ════════════════════════════════════
-  // 섹션 체류시간 추적
-  // ════════════════════════════════════
-  _setupSectionTracking: function() {
-    var self = this;
-    var sections = document.querySelectorAll('section[id]');
-
-    if (!sections.length) return;
-
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        var sectionId = entry.target.id;
-
-        if (entry.isIntersecting) {
-          // 섹션 진입 → 타이머 시작
-          self._sectionTimers[sectionId] = Date.now();
-        } else {
-          // 섹션 이탈 → 체류시간 계산
-          if (self._sectionTimers[sectionId]) {
-            var elapsed = Math.round((Date.now() - self._sectionTimers[sectionId]) / 1000);
-            if (elapsed > 0 && elapsed < 600) { // 10분 미만만 기록
-              if (!self._sectionTimes[sectionId]) {
-                self._sectionTimes[sectionId] = 0;
-              }
-              self._sectionTimes[sectionId] += elapsed;
-              self._pendingSectionData.push({
-                section_id: sectionId,
-                duration: elapsed
-              });
-            }
-            delete self._sectionTimers[sectionId];
-          }
-        }
-      });
-    }, { threshold: 0.4 });
-
-    sections.forEach(function(sec) {
-      observer.observe(sec);
-    });
-
-    // 주기적 전송 (30초마다)
-    setInterval(function() {
-      self._flushSectionTimes(false);
-    }, 30000);
-  },
-
-  // ════════════════════════════════════
-  // 체류시간 배치 전송
-  // ════════════════════════════════════
-  _flushSectionTimes: function(force) {
-    if (!this._token || this._token.indexOf('offline') === 0) return;
-    if (!force && this._pendingSectionData.length < 5) return;
-    if (this._pendingSectionData.length === 0) return;
-
-    var dataToSend = this._pendingSectionData.slice();
-    this._pendingSectionData = [];
-
-    console.log('📊 체류시간 전송:', dataToSend.length + '건');
-
-    // sendBeacon 사용 (beforeunload에서도 동작)
-    if (force && navigator.sendBeacon) {
-      var url = AUTH_CONFIG.API_BASE + '?action=section_time';
-      var blob = new Blob([JSON.stringify({
-        session_id: this._sessionId,
-        sections: dataToSend
-      })], { type: 'application/json' });
-
-      navigator.sendBeacon(url, blob);
-    } else {
-      this.apiCall('section_time', 'POST', {
-        session_id: this._sessionId,
-        sections: dataToSend
-      });
-    }
-  },
-
-  // ════════════════════════════════════
-  // API 호출 유틸리티
-  // ════════════════════════════════════
-  apiCall: function(action, method, data) {
-    var url = AUTH_CONFIG.API_BASE + '?action=' + action;
-    var options = {
-      method: method || 'GET',
-      headers: {}
-    };
-
-    if (this._token) {
-      options.headers['Authorization'] = 'Bearer ' + this._token;
-    }
-
-    if (method === 'POST' && data) {
-      options.headers['Content-Type'] = 'application/json';
-      options.body = JSON.stringify(data);
-    }
-
-    return fetch(url, options)
-      .then(function(res) { return res.json(); })
-      .catch(function(err) {
-        console.warn('⚠️ API 호출 실패 [' + action + ']:', err);
-        return { success: false, error: 'Network error' };
-      });
-  },
-
-  // ════════════════════════════════════
-  // 모달 제어
-  // ════════════════════════════════════
-  _showLoginModal: function() {
-    var modal = document.getElementById('login-modal');
-    if (modal) {
-      modal.classList.add('active');
-    }
-  },
-
-  _hideLoginModal: function() {
-    var modal = document.getElementById('login-modal');
-    if (modal) {
-      modal.classList.remove('active');
-    }
-  },
-
-  // ════════════════════════════════════
-  // 세션 관리
-  // ════════════════════════════════════
-  _clearSession: function() {
-    this._user = null;
-    this._token = null;
-    this._sessionId = null;
-    localStorage.removeItem(AUTH_CONFIG.TOKEN_KEY);
-    localStorage.removeItem(AUTH_CONFIG.USER_KEY);
-    localStorage.removeItem(AUTH_CONFIG.SESSION_KEY);
-  },
-
-  _generateSessionId: function() {
-    return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
   }
-};
 
-// ─── 페이지 로드 시 자동 초기화 ───
-document.addEventListener('DOMContentLoaded', function() {
-  AuthManager.init();
-});
+  // ============================================
+  // 5. 사용자 이력 조회 (개인화 인사말)
+  // ============================================
+
+  function fetchUserHistory(userId) {
+    return fetch(API_BASE + '?action=user_history&user_id=' + userId)
+      .then(function (r) {
+        if (!r.ok) return null;
+        return r.json();
+      })
+      .then(function (data) {
+        if (data && data.success) return data;
+        return null;
+      })
+      .catch(function () { return null; });
+  }
+
+  // ============================================
+  // 6. 아바타에 사용자 정보 + 이력 전달
+  // ============================================
+
+  function sendUserInfoToAvatar(user, token) {
+    var iframe = document.getElementById('heygen-pip');
+    if (!iframe || !iframe.contentWindow) return;
+
+    var tkn = token || localStorage.getItem(TOKEN_KEY);
+
+    fetchUserHistory(user.id).then(function (history) {
+      var payload = {
+        type: 'USER_INFO',
+        user: user,
+        token: tkn,
+        sessionId: getSessionId(),
+        apiBase: API_BASE,
+        history: history ? {
+          visit_count: history.visit_count,
+          recent_topics: history.recent_topics,
+          interest_track: history.interest_track,
+          last_visit: history.last_visit
+        } : null
+      };
+
+      try {
+        iframe.contentWindow.postMessage(payload, '*');
+        iframe.contentWindow.postMessage({ type: 'START_AVATAR' }, '*');
+        console.log('[Auth] USER_INFO 전송:', user.name);
+      } catch (e) { }
+
+      // 지연 전송 (iframe 늦게 로드될 수 있음)
+      setTimeout(function () {
+        try {
+          iframe.contentWindow.postMessage(payload, '*');
+        } catch (e) { }
+      }, 3000);
+    });
+  }
+
+  // ============================================
+  // 7. 포괄적 행동 추적 시스템
+  // ============================================
+
+  var sectionTimers = {};
+  var logBuffer = [];
+  var trackingActive = false;
+  var intersectionObserver = null;
+
+  function startTracking() {
+    if (trackingActive) return;
+    trackingActive = true;
+
+    // IntersectionObserver로 섹션 가시성 감지
+    if ('IntersectionObserver' in window) {
+      intersectionObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var id = entry.target.id || 'unknown';
+
+          if (entry.isIntersecting) {
+            if (!sectionTimers[id]) {
+              sectionTimers[id] = { startTime: 0, totalTime: 0, isVisible: false };
+            }
+            sectionTimers[id].startTime = Date.now();
+            sectionTimers[id].isVisible = true;
+          } else {
+            if (sectionTimers[id] && sectionTimers[id].isVisible) {
+              var elapsed = (Date.now() - sectionTimers[id].startTime) / 1000;
+              sectionTimers[id].totalTime += elapsed;
+              sectionTimers[id].isVisible = false;
+
+              // 2초 이상 체류한 경우만 로그
+              if (elapsed >= 2) {
+                addLog('section_view', id, { duration_seconds: Math.round(elapsed) });
+              }
+            }
+          }
+        });
+      }, { threshold: 0.3 });
+
+      // section[id] 요소에 observer 부착
+      var sections = document.querySelectorAll('section[id]');
+      sections.forEach(function (el) {
+        intersectionObserver.observe(el);
+      });
+    }
+
+    // 클릭 이벤트 위임 (탭, CTA, 퀵질문)
+    document.addEventListener('click', handleClick);
+
+    // 스크롤 깊이 추적 (10% 단위)
+    var maxScrollDepth = 0;
+    window.addEventListener('scroll', function () {
+      if (!trackingActive) return;
+      var scrollable = document.body.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      var scrollPercent = Math.round((window.scrollY / scrollable) * 100);
+      var snapped = Math.floor(scrollPercent / 10) * 10;
+      if (snapped > maxScrollDepth && snapped > 0) {
+        maxScrollDepth = snapped;
+        addLog('scroll_depth', 'page', { depth_percent: snapped });
+      }
+    });
+
+    console.log('[Auth] 행동 추적 시작');
+  }
+
+  function stopTracking() {
+    trackingActive = false;
+    if (intersectionObserver) {
+      intersectionObserver.disconnect();
+      intersectionObserver = null;
+    }
+    document.removeEventListener('click', handleClick);
+  }
+
+  function handleClick(e) {
+    // CTA 버튼 클릭
+    var ctaBtn = e.target.closest('.cta-chat, .cta-btn');
+    if (ctaBtn) {
+      var ctaText = ctaBtn.textContent.trim().substring(0, 50);
+      var sectionEl = ctaBtn.closest('section');
+      var sectionId = sectionEl ? sectionEl.id : 'unknown';
+      addLog('cta_click', sectionId, { button_text: ctaText });
+    }
+
+    // 퀵 질문 버튼 클릭
+    var qBtn = e.target.closest('.quick-question-btn, [data-question]');
+    if (qBtn) {
+      var question = qBtn.dataset.question || qBtn.textContent.trim();
+      addLog('quick_question', 'avatar', { question: question.substring(0, 100) });
+    }
+
+    // 일반 버튼/탭 클릭 (CTA가 아닌 것)
+    var btn = e.target.closest('button, [role="tab"], .tab-btn');
+    if (btn && !ctaBtn && !qBtn) {
+      var btnText = btn.textContent.trim().substring(0, 30);
+      var btnSection = btn.closest('section');
+      var btnSectionId = btnSection ? btnSection.id : 'unknown';
+      addLog('tab_click', btnSectionId, { button_text: btnText });
+    }
+  }
+
+  // ============================================
+  // 8. 로그 버퍼 + 배치 전송
+  // ============================================
+
+  function addLog(eventType, sectionId, metadata) {
+    logBuffer.push({
+      event_type: eventType,
+      section_id: sectionId,
+      session_id: getSessionId(),
+      metadata: metadata,
+      timestamp: new Date().toISOString()
+    });
+
+    // 5개 모이면 전송
+    if (logBuffer.length >= 5) {
+      flushLogs(false);
+    }
+  }
+
+  function flushLogs(useBeacon) {
+    if (logBuffer.length === 0) return;
+
+    var session = getStoredSession();
+    if (!session) return;
+
+    var logsToSend = logBuffer.slice();
+    logBuffer = [];
+
+    var payload = JSON.stringify({
+      action: 'log_batch',
+      token: session.token,
+      session_id: getSessionId(),
+      events: logsToSend
+    });
+
+    if (useBeacon && navigator.sendBeacon) {
+      var blob = new Blob([payload], { type: 'application/json' });
+      navigator.sendBeacon(API_BASE, blob);
+      console.log('[Auth] 로그 배치 전송 (beacon):', logsToSend.length + '건');
+    } else {
+      fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      }).catch(function () { });
+      console.log('[Auth] 로그 배치 전송 (fetch):', logsToSend.length + '건');
+    }
+  }
+
+  // 페이지 떠날 때 남은 로그 + 체류시간 전송
+  window.addEventListener('beforeunload', function () {
+    // 현재 보이는 섹션의 체류시간 마감
+    Object.keys(sectionTimers).forEach(function (id) {
+      if (sectionTimers[id] && sectionTimers[id].isVisible) {
+        var elapsed = (Date.now() - sectionTimers[id].startTime) / 1000;
+        if (elapsed >= 2) {
+          addLog('section_view', id, { duration_seconds: Math.round(elapsed) });
+        }
+      }
+    });
+
+    // 총 페이지 체류시간
+    if (window.__bizPageLoadTime) {
+      var totalTime = Math.round((Date.now() - window.__bizPageLoadTime) / 1000);
+      addLog('page_total', 'page', { total_seconds: totalTime });
+    }
+
+    flushLogs(true);
+  });
+
+  window.__bizPageLoadTime = Date.now();
+
+  // ============================================
+  // 9. 추천 / 예측 API
+  // ============================================
+
+  function getRecommendations() {
+    var session = getStoredSession();
+    if (!session) return Promise.resolve(null);
+
+    return fetch(API_BASE + '?action=get_recommendations&token=' + session.token)
+      .then(function (r) { return r.json(); })
+      .then(function (d) { return d.success ? d : null; })
+      .catch(function () { return null; });
+  }
+
+  function getPrediction() {
+    var session = getStoredSession();
+    if (!session) return Promise.resolve(null);
+
+    return fetch(API_BASE + '?action=get_predict&token=' + session.token)
+      .then(function (r) { return r.json(); })
+      .then(function (d) { return d.success ? d : null; })
+      .catch(function () { return null; });
+  }
+
+  // ============================================
+  // 10. 로그인 모달 + 초기화
+  // ============================================
+
+  function setupLoginModal() {
+    var modal = document.getElementById('login-modal');
+    var kakaoBtn = document.getElementById('kakao-login-btn');
+    var guestBtn = document.getElementById('login-guest-btn');
+    var logoutBtn = document.getElementById('logout-btn');
+
+    // 카카오 SDK 초기화
+    if (window.Kakao && !Kakao.isInitialized()) {
+      Kakao.init(KAKAO_JS_KEY);
+      console.log('[Auth] Kakao SDK initialized:', Kakao.isInitialized());
+    }
+
+    // 카카오 로그인 버튼
+    if (kakaoBtn) {
+      kakaoBtn.addEventListener('click', function () {
+        kakaoLogin();
+      });
+    }
+
+    // 게스트 버튼
+    if (guestBtn) {
+      guestBtn.addEventListener('click', function () {
+        if (modal) modal.classList.remove('active');
+        console.log('[Auth] 게스트 입장');
+      });
+    }
+
+    // 로그아웃 버튼
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', logout);
+    }
+  }
+
+  function init() {
+    setupLoginModal();
+
+    // 기존 세션 복원
+    var session = getStoredSession();
+    if (session) {
+      // 토큰 유효성 검증
+      fetch(API_BASE + '?action=verify&token=' + encodeURIComponent(session.token))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.success || data.valid) {
+            updateUI(session.user);
+            startTracking();
+            setTimeout(function () {
+              sendUserInfoToAvatar(session.user, session.token);
+            }, 2000);
+          } else {
+            clearSession();
+            updateUI(null);
+            console.log('[Auth] 세션 만료, 재로그인 필요');
+            setTimeout(function () {
+              var modal = document.getElementById('login-modal');
+              if (modal) modal.classList.add('active');
+            }, 1000);
+          }
+        })
+        .catch(function () {
+          // 오프라인이면 일단 세션 유지
+          updateUI(session.user);
+        });
+    } else {
+      updateUI(null);
+      // 3초 후 로그인 모달 표시
+      setTimeout(function () {
+        var modal = document.getElementById('login-modal');
+        if (modal && !getStoredSession()) {
+          modal.classList.add('active');
+        }
+      }, 3000);
+    }
+  }
+
+  // DOM 준비되면 초기화
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // 전역 API 노출
+  window.BizAuth = {
+    kakaoLogin: kakaoLogin,
+    logout: logout,
+    getSession: getStoredSession,
+    getRecommendations: getRecommendations,
+    getPrediction: getPrediction,
+    flushLogs: flushLogs
+  };
+
+})();
